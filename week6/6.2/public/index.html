@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Auth</title>
+</head>
+<body>
+    <div class="signUP">
+        <h3>Signup</h3>
+    <input class="signup" type="text" placeholder="Username">
+    <input class="signup" type="password" placeholder="Password">
+    <button onclick="signUp()">signup</button>
+</div>
+    <div  class="signIN">
+        <h3>Signin</h3>
+    <input class="signin" type="text" placeholder="Username">
+    <input class="signin" type="password" placeholder="Password">
+    <button onclick="signIn()">signin</button>
+</div>
+<button class="logout" onclick="logout()">Logout</button>
+<div id="info"></div>
+
+<script>
+    const userSignUp = document.querySelectorAll('.signup')
+    const userSignIn = document.querySelectorAll('.signin')
+
+    const getUserInfo = async() => {
+        const token = localStorage.getItem('authorization')
+        const response = token && await axios.get('http://localhost:3000/me', {
+            headers:{authorization:token}
+        })
+        
+        if(token){
+            document.querySelector('.logout').style.display = 'block'
+            document.querySelector('#info').style.display = 'block'
+        document.querySelector('#info').innerHTML = `Username : ${response.data.username} Password:${response.data.password}`
+        document.querySelector('.signUP').style.display = 'none'
+        document.querySelector('.signIN').style.display = 'none'
+    }else{
+            document.querySelector('.logout').style.display = 'none'
+            document.querySelector('#info').style.display = 'none'
+
+        }
+    }
+    getUserInfo()
+
+    const logout = () => {
+        document.querySelector('#info').innerHTML = ''
+          document.querySelector('.signUP').style.display = 'block'
+        document.querySelector('.signIN').style.display = 'block'
+        localStorage.removeItem('authorization')
+        document.querySelector('.logout').style.display = 'none'
+
+    }
+    const signUp = async() => {
+        const response = await axios.post('http://localhost:3000/signup',{
+            username:userSignUp[0].value,
+            password:userSignUp[1].value
+        },{
+            headers:{'Content-Type':'application/json'}
+        }
+    )
+    alert(response.data.message)
+    }
+    const signIn = async() => {
+        const response = await axios.post('http://localhost:3000/signin',{
+            username:userSignIn[0].value,
+            password:userSignIn[1].value
+        },{
+            headers:{'Content-Type':'application/json'}
+        }
+    )
+    localStorage.setItem('authorization',response.data.token)
+
+    getUserInfo()
+    document.querySelector('#info').innerHTML = response.data.token
+    }
+</script>
+</body>
+</html>

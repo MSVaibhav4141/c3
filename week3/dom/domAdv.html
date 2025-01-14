@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Todo list</h1>
+    <div id="todos">
+    
+    </div>
+    <input type="text">
+    <button onclick=addTodo()>submit</button>
+    <script>
+        let todos = []
+
+        const addTodo = () => {
+            const value = document.querySelector('input').value
+            document.querySelector('input').value = null
+            const todo = {
+                title:value
+            }
+            todos.push(todo)
+            render()
+        }
+
+        const deleteTodo = (index) =>  {
+            todos.splice(index,1)
+            render()
+        }
+
+        const createElement = (todo, index) => {
+            console.log(todo, index)
+            const div = document.createElement('div')
+            const title = document.createElement('span')
+            const button = document.createElement('button')
+            title.innerHTML = todo.title
+            button.innerText = 'delete'
+            button.addEventListener('click', () => deleteTodo(index))
+            div.appendChild(title)
+            div.appendChild(button)
+            return div
+        }
+        const render = () => {
+            console.log(todos)
+            document.querySelector('#todos').innerHTML = ''
+            todos.forEach((i,index) => {
+                const div = createElement(i, index)
+                document.querySelector('#todos').appendChild(div)
+            })
+        }
+    </script>
+</body>
+</html>
