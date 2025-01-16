@@ -18,7 +18,7 @@ const userSchema = new Schema({
     }
 })
 
-const todoSchema = new Schema({
+const todoSchema = new Schema({ 
     description:{
         type:String,
         require:true
@@ -27,7 +27,17 @@ const todoSchema = new Schema({
         type:Boolean,
         default:false
     },
-    userId:ObjectId,
+    userId:{
+        type:ObjectId,
+        ref:'User'
+    },
+    time:{
+        type:String,
+        default:(new Date()).toISOString()
+    },
+    toBeCompleted:{
+        type:String,
+    }
 })
 
 const User = mongoose.model('User', userSchema);
