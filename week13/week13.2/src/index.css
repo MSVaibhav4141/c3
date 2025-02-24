@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap');
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+@import "tailwindcss";
+
+
+@theme{
+--font-display:"Mona Sans", serif;
+--color-gray-200:#F5F6F8;
+--color-blue-200:#E4E9EE;
+--color-blue-400:#002A5B;
+--color-green-400:#3FE0CF;
+--color-back-300:#FAFCFD;
+}
+
