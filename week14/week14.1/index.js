@@ -36,4 +36,4 @@ delayFucntionCallSum(() => callBackFunctionSum(2, 2));
 // const calcSummation = (a:variable, b: variable): variable => {
 //     return a + b ; // Why does this throw error. its an issue   
 // } 
-// calcSummation(1,2);
+// calcSummation(1,2);i
