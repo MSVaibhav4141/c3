@@ -10,6 +10,7 @@ import { User } from "../models/userModel"
 import { checkValidSchema } from "../utils/checkValidSchema"
 import { ContentModel } from "../models/contentModel"
 import { LinkModel } from "../models/linkSchema";
+import { searchDocuments, sendDocToLLm, storeDocument } from "../llms/vectorDb";
 
 const UserSchema  = z.object({
     name:z.string().min(3, {message:"Name must be of 3 characters"}).max(10,{message:"Name must be under 10 characters"}),
@@ -65,8 +66,8 @@ export const userSignIn = asyncErrorHandler(
         
         if(!isValidPassword)
             throw new ErrorHandeler('Authentication Failed', 401)
-        
-        const token = jwt.sign({id:(user?._id)?.toString()!}, "MYSECRET")
+        const JWT_SECRET= process.env.JWT_SECRET as string;
+        const token = jwt.sign({id:(user?._id)?.toString()!}, JWT_SECRET)
         
         console.log(token)
         res.status(200).json({
@@ -80,7 +81,9 @@ export const createContent = asyncErrorHandler(
 
         checkValidSchema<ReqContent>(req.body, ContentSchema)
 
-        await ContentModel.create(req.body)
+        const content =  await ContentModel.create(req.body)
+
+        await storeDocument(content._id.toString(), content.title as string)
 
         res.status(200).json({
             message:"Your content has been saved"
@@ -165,3 +168,20 @@ export const getShareLinkContent = asyncErrorHandler(
     }
 )
 
+export const searchDoc = asyncErrorHandler(
+    async(req:Request<{},{},{text:string}>, res ,next) => {
+        const {text} = req.body;
+
+        const result = await searchDocuments(text)
+
+        const matchingContent =await sendDocToLLm(text, result)
+        const cleaned = matchingContent
+        .replace(/^```json\s*/i, '')  
+        .replace(/```$/, '');            
+
+        console.log(matchingContent)
+        res.status(200).json({
+            message:JSON.parse(cleaned)
+        })
+    }
+)
