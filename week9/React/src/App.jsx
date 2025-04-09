@@ -3,7 +3,7 @@ import './App.css'
 
 function App() {
   const [isVisible, setVisibile] = useState(true)
-  const [prevState, setState] = useState(0)
+
   useEffect(() => {
     setInterval(() => {
       setVisibile(p => !p)

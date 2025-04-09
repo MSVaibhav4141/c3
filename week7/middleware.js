@@ -10,9 +10,9 @@ const auth = asyncErrorHandeler(async(req, res, next) => {
         next()
     }else{
         return res.status(403).json({
-            message:"Invalid credentials"
+            message:"Invalid credentials"         
         })
     }
 })
 
-module.exports = auth
+module.exports = auth;
