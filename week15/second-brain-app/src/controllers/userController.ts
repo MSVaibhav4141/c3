@@ -10,12 +10,12 @@ import { User } from "../models/userModel"
 import { checkValidSchema } from "../utils/checkValidSchema"
 import { ContentModel } from "../models/contentModel"
 import { LinkModel } from "../models/linkSchema";
-import { searchDocuments, sendDocToLLm, storeDocument } from "../llms/vectorDb";
+import { getType, searchDocuments, sendDocToLLm, storeDocument } from "../llms/vectorDb";
 
 const UserSchema  = z.object({
     name:z.string().min(3, {message:"Name must be of 3 characters"}).max(10,{message:"Name must be under 10 characters"}),
-    username:z.string().min(3, {message:"Username must be of 3 characters"}).max(10,{message:"Username must be under 10 characters"}),
-    password:z.string().min(3).includes('@')
+    username:z.string().min(3, {message:"Username must be of 3 characters"}).max(20,{message:"Username must be under 10 characters"}),
+    password:z.string().min(3).includes('@', {message:"Password must include @ in it"})
 })
 const SignInSchema = UserSchema.pick({username:true, password:true})
 
@@ -24,7 +24,6 @@ const ContentSchema = z.object({
     type: z.string(),
     title: z.string(),
     tags: z.array(z.string()),
-    userId: z.string()
 })
 
 
@@ -46,8 +45,12 @@ export const userSignup = asyncErrorHandler(
         req.body.password = hashedPassword;
         const result  = await User.create(req.body)
 
+        const JWT_SECRET= process.env.JWT_SECRET as string;
+        const token = jwt.sign({id:result._id},JWT_SECRET)
+
         res.status(200).json({
-            message:'User regstered successfuly'
+            username:result.name,
+            token
         })
     }
     
@@ -55,13 +58,16 @@ export const userSignup = asyncErrorHandler(
 
 export const userSignIn = asyncErrorHandler(
     async(req:Request<{},{},ReqSignInBody>, res, next) => {
-        
         checkValidSchema<ReqSignInBody>(req.body ,SignInSchema)
-
+        
+        console.log(req.body)
         const {username, password } = req.body;
-
+        
         const user = await User.findOne({username}).select("+password").exec();
 
+        if(!user){
+            throw new ErrorHandeler('User not found',404)
+        }
         const isValidPassword = bcrypt.compare(password, user?.password!)
         
         if(!isValidPassword)
@@ -69,9 +75,9 @@ export const userSignIn = asyncErrorHandler(
         const JWT_SECRET= process.env.JWT_SECRET as string;
         const token = jwt.sign({id:(user?._id)?.toString()!}, JWT_SECRET)
         
-        console.log(token)
         res.status(200).json({
-            token
+            token,
+            username:user.name
         })
     }
 )
@@ -81,7 +87,8 @@ export const createContent = asyncErrorHandler(
 
         checkValidSchema<ReqContent>(req.body, ContentSchema)
 
-        const content =  await ContentModel.create(req.body)
+        const id = req.userId
+        const content =  await ContentModel.create({...req.body,userId:id})
 
         await storeDocument(content._id.toString(), content.title as string)
 
@@ -135,8 +142,7 @@ export const createShareableLink =asyncErrorHandler(
     const linkCreated = await LinkModel.create({
         hash,
         contentId
-    })
-
+    })    
     res.status(200).json({
         link:linkCreated._id.toString()
     })
@@ -182,6 +188,16 @@ export const searchDoc = asyncErrorHandler(
         console.log(matchingContent)
         res.status(200).json({
             message:JSON.parse(cleaned)
+        })
+    }
+)
+
+export const getTypeLink = asyncErrorHandler(
+    async(req:Request<{},{},{link:string}>, res, next) => {
+        const linkType = await getType(req.body.link)
+
+        res.status(200).json({
+            message:linkType
         })
     }
 )

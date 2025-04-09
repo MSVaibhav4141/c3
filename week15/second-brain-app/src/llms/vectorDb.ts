@@ -34,14 +34,43 @@ export async function storeDocument(docId:string, text:string) {
   
 
 
-  
-  export const sendDocToLLm = async(text:string, results:[string]): Promise<any> => {
+  export const sendDocToLLm = async(text:string, results:string[]): Promise<any> => {
 
     const docs = results.join('\n')
       const ai = new GoogleGenAI({ apiKey: process.env.GEMENI_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `Given the following list of documents:\n\n${docs}\n\nBased on the title: "${text}", identify the most relevant document(s).\n\nReturn:\n- Only one document if it's clearly the most relevant.\n- Up to three documents if multiple are similarly relevant.\n\nRespond ONLY with a JSON array of objects, each in the format:\n{\n  "id": "original_id_without_the_'Doc'_prefix",\n  "content": "document content"\n}\n\ninclude markdown, backticks, or explanations in the response. Only return the raw JSON.`
+    });
+    return response.text
+  }
+  
+
+  const generatePrompt = (link: string) => `
+I have a URL: "${link}"
+
+Your task is to analyze this URL and classify it into one of the following categories based on its content and platform:
+
+- YouTube
+- X (formerly Twitter)
+- GitHub
+- Reddit
+- Medium
+- Blog
+- News Article
+- Documentation
+- Product Page
+- Other
+
+Only respond with the category name. Do not include any explanation or additional text.
+`;
+
+  export const getType = async(link:string): Promise<any> => {
+
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMENI_KEY });
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: generatePrompt(link)
     });
     return response.text
   }
