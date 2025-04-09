@@ -174,7 +174,7 @@ export const ContentModal = () => {
             <div
               className="bg-green-500/30 rounded-sm hover:bg-red-300 mr-1 px-2 py-1 text-xs mt-2"
               key={index}
-              onClick={() => removeTags(index)}
+              onClick={() => removeTags(index)} 
             >
               {i}
             </div>
