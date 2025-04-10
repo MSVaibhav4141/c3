@@ -1,10 +1,14 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./Button";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createContent } from "../../api/createContent";
+import { toast } from "react-toastify";
+import { throwAxiosError } from "../../handleAxioserr";
+import { getTypes } from "../../api/getType";
 
 export const ContentModal = () => {
+
   //Inital value for payloads
   const initialLink = {
     link: "",
@@ -40,7 +44,8 @@ export const ContentModal = () => {
   const [contentType, setType] = useState<"link" | "notes">("link");
   const [tagArray, setTag] = useState<string[]>([]);
   const [tagInput, setInput] = useState(tagInpuShape);
-  const [isZodError, setZodError] = useState('')
+  const [type, settype] = useState<string>();
+
   const defaultButtonStyle = {
     style: `w-[48%] border-1 border-gray-200 rounded-md flex items-center justify-center p-4  cursor-pointer hover:border-purple-500 transition duration-150 font-medium`,
   };
@@ -104,22 +109,45 @@ export const ContentModal = () => {
     }
   };
 
-  //ccheckng for valid link
-  const checkInput = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const zodLink = z.string().url({message:"Enter a valid link"})
-    const isError =  zodLink.safeParse(e.currentTarget.value)
-    console.log(isError)
-  }
+
+  // Mutation for creating post
 
   const createPost = useMutation({
     mutationFn: createContent,
+    onSuccess:(data) => {
+      toast.success(data.message)
+    },
+    onError:throwAxiosError
   });
 
+
+  const getType = useMutation({
+    mutationFn:getTypes,
+    onSuccess:(data) => {
+      setTag(data.message.topTags.map(i => i?.name))
+      settype(data.message.category)
+    },
+    onError:throwAxiosError
+  })
+
   const handleSubmit = () => {
-    // createPost.mutate(payloadLink)
+    type && createPost.mutate({data:{...payloadLink, type:type},token:localStorage.getItem('authorization') })
   };
+
+
+// Handling blur on Link
+
+const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const data = {
+    link:e.currentTarget.value,
+    token: localStorage.getItem('authorization')
+  }
+
+  getType.mutate(data)
+}
+
   return (
-    <div className="pt-4 max-w-1/3 bg-modal  rounded-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8">
+    <form className="pt-4 max-w-1/3 bg-modal  rounded-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8">
       <div className="w-full flex justify-between">
         <div
           onClick={() => handleTypeChange("link")}
@@ -142,6 +170,7 @@ export const ContentModal = () => {
         <div>
           <input
             onChange={handleModaInputChage}
+            onBlur={(e) => handleBlur(e)}
             type="text"
             placeholder="Link"
             name="link"
@@ -151,7 +180,6 @@ export const ContentModal = () => {
       )}
       <div>
         <input
-        onBlur={checkInput}
           name="title"
           onChange={handleModaInputChage}
           type="text"
@@ -174,7 +202,7 @@ export const ContentModal = () => {
             <div
               className="bg-green-500/30 rounded-sm hover:bg-red-300 mr-1 px-2 py-1 text-xs mt-2"
               key={index}
-              onClick={() => removeTags(index)} 
+              onClick={() => removeTags(index)}
             >
               {i}
             </div>
@@ -182,12 +210,14 @@ export const ContentModal = () => {
         </div>
         <Button
           onClick={handleSubmit}
+          loading={createPost.isPending}
+          disabled={getType.isPending}
           size="md"
           title="Add"
           variant="primary"
           className="w-full p-3 mt-4 text-purple-500"
         />
       </div>
-    </div>
+    </form>
   );
 };

@@ -38,26 +38,11 @@ export const DashboardHome = () => {
           <Cards type="YT" />
         </div>
         <div className="break-inside-avoid mb-4">
+          <Cards type="YT" />
+        </div>
+        <div className="break-inside-avoid mb-4">
           <Cards type="X" />
         </div>
-        {/* <div className="break-inside-avoid mb-4">
-            <Cards type="YT" />
-          </div>
-          <div className="break-inside-avoid mb-4">
-            <Cards type="X" />
-          </div>
-          <div className="break-inside-avoid mb-4">
-            <Cards type="YT" />
-          </div>
-          <div className="break-inside-avoid mb-4">
-            <Cards type="YT" />
-          </div>
-          <div className="break-inside-avoid mb-4">
-            <Cards type="YT" />
-          </div>
-          <div className="break-inside-avoid mb-4">
-            <Cards type="X" />
-          </div> */}
       </Masonry>
     </>
   );

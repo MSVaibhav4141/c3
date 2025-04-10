@@ -32,8 +32,8 @@ export const BadgeModal = (props:BadgeProps) => {
         />
         <div className={`${defaultStyle.style} ${actionState[props.open.toString()]}`}>
             
-          {props.items.map(i => cloneElement(i,{
-            className:`mt-2 hover:bg-purple-200 p-2 rounded-md cursor-pointer transition duration-250 block pointer-events-auto w-full`,
+          {props.items.map((i,index) => cloneElement(i,{
+            className:`${index === 0 ? 'flex items-end' : ''} mt-2 hover:bg-purple-200 p-2 rounded-md cursor-pointer transition duration-250 block pointer-events-auto w-full`,
           }))}
         </div>
       </div>

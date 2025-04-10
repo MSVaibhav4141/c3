@@ -26,3 +26,6 @@ body{
 .masonry-column {
   background-clip: padding-box;
 }
+iframe,blockquote {
+  pointer-events: none !important;
+}

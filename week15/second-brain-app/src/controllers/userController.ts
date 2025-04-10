@@ -11,6 +11,7 @@ import { checkValidSchema } from "../utils/checkValidSchema"
 import { ContentModel } from "../models/contentModel"
 import { LinkModel } from "../models/linkSchema";
 import { getType, searchDocuments, sendDocToLLm, storeDocument } from "../llms/vectorDb";
+import { Tags } from "../models/tagsModel";
 
 const UserSchema  = z.object({
     name:z.string().min(3, {message:"Name must be of 3 characters"}).max(10,{message:"Name must be under 10 characters"}),
@@ -148,6 +149,18 @@ export const createShareableLink =asyncErrorHandler(
     })
 })
 
+export const createTag = asyncErrorHandler(
+    async(req:Request<{},{},{tag:string}>, res, next) => {
+        checkValidSchema(req.body.tag,z.string())
+
+        await Tags.create(req.body)
+       
+        res.status(200).json({
+        message:'Tags are created'
+     })
+        
+    }
+)
 export const getShareLinkContent = asyncErrorHandler(
     async(req:Request<{link: string}>, res, next) => {
         checkValidSchema(req.params.link, z.string())

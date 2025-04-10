@@ -1,6 +1,8 @@
 import { Pinecone } from '@pinecone-database/pinecone';
 import {  getEmbedding } from './embedding';
 import { GoogleGenAI } from "@google/genai";
+import { Tags } from '../models/tagsModel';
+import mongoose from 'mongoose';
 
 
 export async function storeDocument(docId:string, text:string) {
@@ -46,32 +48,26 @@ export async function storeDocument(docId:string, text:string) {
   }
   
 
-  const generatePrompt = (link: string) => `
-I have a URL: "${link}"
+  type promptType = {
+    link:string ,
+    tags:mongoose.Document[] | null |undefined
+  } 
+  const generatePrompt = (props: promptType) => `I have a URL: "${props.link}". Classify it into one of these categories: YouTube, X (formerly Twitter), GitHub, Reddit, Medium, Blog, News Article, Documentation, Product Page, NPMjs, Other. Extract metadata (title, description, content summary) if available. I have the following list of tags with their IDs: ${props.tags}. Based on the metadata, return the top 5 best-matching tags from the list under "topTags". If none match, return an empty array. Also suggest 3 new tags relevant to the content that are NOT from the list, returned under the "suggested" key, like: "suggested": [ { "name": "..." }, ... ]. If you have no information or idea about the link's content, leave "suggested" as an empty array. Respond ONLY with a raw JSON object in the format: { "category": "<category>", "topTags": [ { "id": "<tag_id>", "name": "<tag_name>" } ], "suggested": [ { "name": "<suggested_tag>" } ] }. Do NOT return markdown, code block, backticks, strings, or any explanation—only pure JSON.`;
 
-Your task is to analyze this URL and classify it into one of the following categories based on its content and platform:
-
-- YouTube
-- X (formerly Twitter)
-- GitHub
-- Reddit
-- Medium
-- Blog
-- News Article
-- Documentation
-- Product Page
-- Other
-
-Only respond with the category name. Do not include any explanation or additional text.
-`;
 
   export const getType = async(link:string): Promise<any> => {
-
+    const tags = await Tags.find({});
       const ai = new GoogleGenAI({ apiKey: process.env.GEMENI_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: generatePrompt(link)
+      contents: generatePrompt({link, tags:tags})
     });
-    return response.text
+
+    const rawMessage =  response.text?.toString() as string;
+    const cleaned = rawMessage.replace(/```json|```/g, '').trim();
+
+    const data = JSON.parse(cleaned);
+
+    return data;
   }
   

@@ -18,7 +18,7 @@ export const useCloseOnOutClick = (element:HTMLElement | null) => {
         document.body.addEventListener('click', handleClick)
 
         return () => (
-            document.body.addEventListener('click', handleClick)
+            document.body.removeEventListener('click', handleClick)
         )
     },[element])
 

@@ -49,12 +49,11 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
         setAuth(data?.isAuth)
         setName(data?.username)
         setLoading(false)
-        console.log(data)
     }, [data])
 
 
     return<>
-    <AuthContext.Provider value={{loading,isAuth,login,logout,username}}>
+    <AuthContext.Provider value={{loading,isAuth,login,logout,username, }}>
     {children}
     </AuthContext.Provider>
     </>

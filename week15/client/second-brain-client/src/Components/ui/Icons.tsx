@@ -85,3 +85,10 @@ export const CrossIcon = (props:{stroke:number , className?:string}) => (
 </svg>
 
 )
+
+export const GemeniIcon = (props:{className?:string}) => (
+  <div className={props.className}>
+
+  <img  src="/assets/gemini.png" alt="gemini-logo"  className="w-full h-full object-contain"/>
+  </div>
+)

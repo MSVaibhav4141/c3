@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { Input } from "../Input";
-import { Bars, PlusIcon, SearchIcon } from "../Icons";
+import { Bars, GemeniIcon, PlusIcon, SearchIcon } from "../Icons";
 import { useAuth } from "../../../context/AuthContent";
 import { Modal } from "../Modal";
 import { ContentModal } from "../ContentModal";
@@ -15,6 +15,8 @@ import { SearchModal } from "./SeachModal";
 import { BadgeModal } from "./IconModal";
 import { useCloseOnOutClick } from "../../../hooks/closeOutsideClick";
 import { Link } from "react-router-dom";
+import { Button } from "../Button";
+import { ToggleSwitch } from "../ToggleSwitch";
 
 interface NavProps {
   logo: ReactElement;
@@ -40,19 +42,24 @@ export const Navbar = (props: NavProps): ReactElement => {
   };
 
   const BadgeItems = [
-    <button>Enable Gemeni</button>,
-    <button>Profile</button>,
-    <button>Theme</button>,
-    <button>Add Conent</button>,
-    <button
+    <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
+    <span>Profile</span>,
+    <span>Theme</span>,
+    <span>Add Conent</span>,
+    <span>Bookmarks</span>,
+    <Button
       onClick={() => {
-        logout();
+        // logout();
+        console.log('hi')
         setBadge(false);
+        logout()
       }}
+      title="Logout"
+      variant="primary"
+      size="sm"
+
     >
-      Logout
-    </button>,
-    <button>Bookmarks</button>,
+    </Button>,
   ];
 
   const badgeRef = useRef<HTMLDivElement>(null);

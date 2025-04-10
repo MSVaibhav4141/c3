@@ -13,7 +13,7 @@ const contentSchema = new mongoose.Schema({
         require:true
     },
     tags:[{
-        type:mongoose.Types.ObjectId, ref:'Tag'
+        type:String
     }],
     userId:{
         type:mongoose.Types.ObjectId,
