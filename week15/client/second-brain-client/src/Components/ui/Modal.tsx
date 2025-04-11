@@ -31,14 +31,14 @@ export const Modal = ({ isOpen, setOpen, children, opacity }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0  z-[150] w-[100vw] h-[100vh]  ">
+    <div className="fixed top-0 left-0  z-[150] w-[100vw] h-[100vh] ">
       <div
         className="absolute bg-black  w-[100vw] h-[100vh] top-0 left-0"
         style={{ opacity: opacity / 100 , height:'100vh'}}
         onClick={() => setOpen(false)}
       ></div>
 
-      <div className="relative z-[150] w-[100vw] h-[100vh] ">{children}</div>
+      <div className="relative z-[150] w-[100vw] h-[100vh]">{children}</div>
     </div>
   );
 };

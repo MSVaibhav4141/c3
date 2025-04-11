@@ -45,7 +45,7 @@ export const Navbar = (props: NavProps): ReactElement => {
     <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
     <span>Profile</span>,
     <span>Theme</span>,
-    <span>Add Conent</span>,
+    <span onClick={() => setOpen(true)}>Add Conent</span>,
     <span>Bookmarks</span>,
     <Button
       onClick={() => {
@@ -88,7 +88,7 @@ export const Navbar = (props: NavProps): ReactElement => {
                     stroke={1.5}
                   />
                 </div>
-                <Modal isOpen={open} setOpen={setOpen} opacity={50}>
+                <Modal isOpen={open} setOpen={setOpen} opacity={50} >
                   <ContentModal />
                 </Modal>
                 <Input

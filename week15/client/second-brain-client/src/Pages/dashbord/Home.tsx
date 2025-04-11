@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Cards } from "../../Components/ui/Cards";
 import Masonry from "react-masonry-css";
 
@@ -9,6 +10,11 @@ const breakpoints = {
 };
 
 export const DashboardHome = () => {
+
+  useQuery({
+    queryKey:['add','content'],
+    queryFn
+  })
   return (
     <>
       <Masonry

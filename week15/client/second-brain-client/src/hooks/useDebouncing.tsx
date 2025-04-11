@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react"
+import { useEffect } from "react"
 
 type debouceProp =  HTMLInputElement | null
 
 
 export const useDebouncing = (props:debouceProp) => {
     const element = props;
-    const time = useRef<number>(0)
+    // const time = useRef<number>(0)
     useEffect(() => {
 
         if(element){

@@ -52,15 +52,22 @@ export async function storeDocument(docId:string, text:string) {
     link:string ,
     tags:mongoose.Document[] | null |undefined
   } 
-  const generatePrompt = (props: promptType) => `I have a URL: "${props.link}". Classify it into one of these categories: YouTube, X (formerly Twitter), GitHub, Reddit, Medium, Blog, News Article, Documentation, Product Page, NPMjs, Other. Extract metadata (title, description, content summary) if available. I have the following list of tags with their IDs: ${props.tags}. Based on the metadata, return the top 5 best-matching tags from the list under "topTags". If none match, return an empty array. Also suggest 3 new tags relevant to the content that are NOT from the list, returned under the "suggested" key, like: "suggested": [ { "name": "..." }, ... ]. If you have no information or idea about the link's content, leave "suggested" as an empty array. Respond ONLY with a raw JSON object in the format: { "category": "<category>", "topTags": [ { "id": "<tag_id>", "name": "<tag_name>" } ], "suggested": [ { "name": "<suggested_tag>" } ] }. Do NOT return markdown, code block, backticks, strings, or any explanation—only pure JSON.`;
+  type promptTitleType = {
+    title:string ,
+    tags:mongoose.Document[] | null |undefined
+  } 
+  const generatePrompt = (props: promptType) => `I have a URL: "${props.link}". Classify it into one of these categories: YouTube, X (formerly Twitter), GitHub, Reddit, Medium, Blog, News Article, Documentation, Product Page, NPMjs, Other. Extract metadata (title, description, content summary) if available. I have the following list of tags with their IDs: ${props.tags}. Based on the metadata, return the top 5 best-matching tags from the list under "topTags". If none match, return an empty array. Also suggest 3 new tags relevant to the content that are NOT from the list, returned under the "suggested" key, like: "suggested": [ { "name": "..." }, ... ]. If you have no information or idea about the link's content, leave "suggested" as an empty array.Also if you have the information suggest the title for the content of the link. Respond ONLY with a raw JSON object in the format: { "category": "<category>","title":"<title>", "topTags": [ { "id": "<tag_id>", "name": "<tag_name>" } ], "suggested": [ { "name": "<suggested_tag>" } ] }. Do NOT return markdown, code block, backticks, strings, or any explanation—only pure JSON.`;
+  const titlePrompt = (props: promptTitleType) => `
+  I have a title: "${props.title}". Based on this, suggest the top 3 tags either from the following list of tags with IDs: ${props.tags}. Return up to 3 tags that best match the title under the key "topTags". If none match, return an empty array for "topTags" and generate 3 new relevant tags based on the title under "suggested", like: "suggested": [ { "name": "..." }, ... ]. Always return "category" as "Other". If the title provides no useful context, leave "suggested" as an empty array. Respond ONLY with raw JSON in the following format: { "category": "Other", "topTags": [ { "id": "<tag_id>", "name": "<tag_name>" } ], "suggested": [ { "name": "<suggested_tag>" } ] }. Do not include markdown, code blocks, or explanation — only return the raw JSON object.
+  `.trim();
+  
 
-
-  export const getType = async(link:string): Promise<any> => {
+  export const getType = async(body:Record<string, string>): Promise<any> => {
     const tags = await Tags.find({});
       const ai = new GoogleGenAI({ apiKey: process.env.GEMENI_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: generatePrompt({link, tags:tags})
+      contents: body.link ? generatePrompt({link:body.link, tags:tags}) : titlePrompt({title:body.title, tags:tags}) 
     });
 
     const rawMessage =  response.text?.toString() as string;

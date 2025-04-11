@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { z } from "zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createContent } from "../../api/createContent";
 import { toast } from "react-toastify";
 import { throwAxiosError } from "../../handleAxioserr";
 import { getTypes } from "../../api/getType";
+import { TagInput } from "./TagInput";
 
 export const ContentModal = () => {
 
@@ -20,10 +21,7 @@ export const ContentModal = () => {
     tags: [""],
   };
 
-  const tagInpuShape = {
-    link: "",
-    notes: "",
-  };
+
   //Define payloads schema
   const payloadSchemaLink = z.object({
     link: z.string(),
@@ -43,8 +41,11 @@ export const ContentModal = () => {
   const [payloadNotes, setPayloadNotes] = useState<notesPayload>(initialNotes);
   const [contentType, setType] = useState<"link" | "notes">("link");
   const [tagArray, setTag] = useState<string[]>([]);
-  const [tagInput, setInput] = useState(tagInpuShape);
+  const [tagArrayNotes, setTagNotes] = useState<string[]>([]);
+  const [tagInput, setInput] = useState('');
+
   const [type, settype] = useState<string>();
+  const suggestedTag = useRef<Record<string, string>[]>([])
 
   const defaultButtonStyle = {
     style: `w-[48%] border-1 border-gray-200 rounded-md flex items-center justify-center p-4  cursor-pointer hover:border-purple-500 transition duration-150 font-medium`,
@@ -59,39 +60,17 @@ export const ContentModal = () => {
     notes: "border-purple-500 border-2 bg-purple-200",
   };
 
+  const suggestedTagStyle:Record<string, string> = {
+    'true':""
+  }
+
   //When types are getting changed
   const handleTypeChange = (type: "link" | "notes") => {
     setType(type);
   };
 
-  //Updating tags array and payload's tag accordingly
-  const handleTags = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    setInput((prev) => ({ ...prev, [contentType]: value }));
-    if (tagInput[contentType].split(" ").length > 1) {
-      const tags = e.currentTarget.value?.split(" ");
-      setTag((prev) => [...prev, tags[0].trim()]); //Updating payload tags to be in sync with actual tags array
-      contentType === "link"
-        ? setPayloadLink((prev) => ({
-            ...prev,
-            tags: [...tagArray, tags[0].trim()],
-          }))
-        : setPayloadNotes((prev) => ({
-            ...prev,
-            tags: [...tagArray, tags[0].trim()],
-          }));
-      setInput((prev) => ({ ...prev, [contentType]: "" }));
-    }
-  };
 
-  const removeTags = (index: number) => {
-    const tagArrayCopy = [...tagArray];
-    tagArrayCopy.splice(index, 1);
-    setTag(tagArrayCopy); //Updating payload tags to be in sync with actual tags array
-    contentType === "link"
-      ? setPayloadLink((prev) => ({ ...prev, tags: tagArrayCopy }))
-      : setPayloadNotes((prev) => ({ ...prev, tags: tagArrayCopy }));
-  };
+
 
   //Hadnling input changes == setting payloads
   const handleModaInputChage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,28 +105,42 @@ export const ContentModal = () => {
     onSuccess:(data) => {
       setTag(data.message.topTags.map(i => i?.name))
       settype(data.message.category)
+      setPayloadLink(prev => ({...prev,title:data.message.title}))
+      suggestedTag.current = data.message.suggested
     },
     onError:throwAxiosError
   })
 
   const handleSubmit = () => {
-    type && createPost.mutate({data:{...payloadLink, type:type},token:localStorage.getItem('authorization') })
+    contentType === 'link' ?
+    type && createPost.mutate({data:{...payloadLink, type:type},token:localStorage.getItem('authorization') }) :
+    createPost.mutate({data:{...payloadNotes, type:type!},token:localStorage.getItem('authorization') })
   };
 
+
+  useEffect(() => {
+    setPayloadLink(prev => ({...prev,tags:tagArray}))
+  } ,[tagArray])
 
 // Handling blur on Link
 
 const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const data = {
+
+  if(e.currentTarget.value.length > 0 && !type){
+  const data = contentType === 'link' ?  {
     link:e.currentTarget.value,
     token: localStorage.getItem('authorization')
+  } :
+  {
+    title:e.currentTarget.value,
+    token: localStorage.getItem('authorization')
   }
-
   getType.mutate(data)
+}
 }
 
   return (
-    <form className="pt-4 max-w-1/3 bg-modal  rounded-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8">
+    <form className="pt-4 bg-modal md:w-lg w-[calc(100vw-15px)] rounded-xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8">
       <div className="w-full flex justify-between">
         <div
           onClick={() => handleTypeChange("link")}
@@ -175,39 +168,41 @@ const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
             placeholder="Link"
             name="link"
             className={`${inputStyle.style}`}
-          />
+            />
         </div>
       )}
       <div>
         <input
           name="title"
           onChange={handleModaInputChage}
+          onBlur={(e) => {contentType === 'notes' && handleBlur(e)}}
           type="text"
+          value={contentType === 'link' ? payloadLink.title : payloadNotes.title}
           placeholder="title"
           className={`${inputStyle.style}`}
         />
-        <input
-          name="tags"
-          value={tagInput[contentType]}
-          onChange={(e) => {
-            handleTags(e);
-          }}
-          type="text"
-          placeholder="tags"
-          className={`${inputStyle.style}`}
-          disabled={tagArray.length > 2}
-        />
-        <div className="flex flex-wrap">
-          {tagArray.map((i, index) => (
+        {contentType === 'link' ? 
+          <TagInput tagArray={tagArray} tagInput={tagInput} setInput={setInput} setTag={setTag} inputClassName={inputStyle.style} limit={3}/>
+
+        :(
+          <TagInput tagArray={tagArrayNotes} tagInput={tagInput} setInput={setInput} setTag={setTagNotes} inputClassName={inputStyle.style} limit={3}/>
+        )}
+
+        {suggestedTag.current.length > 0 && (
+          <div className="flex flex-wrap items-center text-sm mt-4">
+          <span>Suggested:</span>
+          {suggestedTag.current.map((i, index) => (
             <div
-              className="bg-green-500/30 rounded-sm hover:bg-red-300 mr-1 px-2 py-1 text-xs mt-2"
+              className="bg-gray-500/30 rounded-sm hover:bg-green-500/30 mr-1 px-2 py-1 text-xs"
               key={index}
-              onClick={() => removeTags(index)}
+              onClick={() => setTag(prev => [...prev,i.name])}
             >
-              {i}
+              {i.name}
             </div>
           ))}
         </div>
+        )}
+
         <Button
           onClick={handleSubmit}
           loading={createPost.isPending}

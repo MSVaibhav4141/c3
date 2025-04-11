@@ -8,7 +8,7 @@ export const router  = express.Router();
 router.route('/signup').post(userSignup)
 router.route('/signin').post(userSignIn)
 router.route('/add/content').post(auth, createContent)
-router.route('/get/content/:id').get(auth, getContent)
+router.route('/get/content/:username').get(auth, getContent)
 router.route('/share').get(createShareableLink)
 router.route('/share/content/:link').get(getShareLinkContent)
 router.route('/get/type').post(getTypeLink)

@@ -103,7 +103,7 @@ export const createContent = asyncErrorHandler(
 export const getContent = asyncErrorHandler(
     async(req:Request<{id:string}>, res, next) => {
        checkValidSchema(req.params.id, z.string())
-
+        
        
        const userId:string = req.userId as string;
        const {id : displayUser} = req.params;
@@ -206,8 +206,8 @@ export const searchDoc = asyncErrorHandler(
 )
 
 export const getTypeLink = asyncErrorHandler(
-    async(req:Request<{},{},{link:string}>, res, next) => {
-        const linkType = await getType(req.body.link)
+    async(req:Request<{},{},{link:string,title:string}>, res, next) => {
+        const linkType = await getType(req.body)
 
         res.status(200).json({
             message:linkType
