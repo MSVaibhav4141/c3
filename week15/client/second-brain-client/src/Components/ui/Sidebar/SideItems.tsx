@@ -17,6 +17,6 @@ const defaultItemStyle:Record<string, string> = {
 export const SideItem = (props:SideItemProp) => {
 
     return (
-        <div onClick={() => console.log('hiii')} className={`hover:bg-purple-200 sm:mb-4 m-1  rounded-sm ${defaultItemStyle.style} ${props.square && defaultItemStyle['square']}`}> {props.item}</div>
+        <div onClick={() => console.log('hiii')} className={`dark:hover:!text-purple-400  dark:text-grey-400 hover:bg-purple-200 sm:mb-4 m-1  rounded-sm ${defaultItemStyle.style} ${props.square && defaultItemStyle['square']}`}> {props.item}</div>
     )
 }

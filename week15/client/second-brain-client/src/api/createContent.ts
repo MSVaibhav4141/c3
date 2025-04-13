@@ -5,8 +5,9 @@ type postContent = {
    data:{ title: string;
     type: string;
     tags: string[];
-    link?: string | undefined;},
-    token:string | null
+    link?: string | undefined},
+    token:string | null,
+    body?:string
 }
 
 export const createContent = async(args:postContent) => {

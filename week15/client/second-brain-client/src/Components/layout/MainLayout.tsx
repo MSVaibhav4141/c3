@@ -38,7 +38,7 @@ export const MainLayout = () => {
   return (
     <>
       <Navbar h={111} logo={<LogoNavbar />} navItems={<NavItems />} />
-      <main className="md:max-w-[2100px] min-h-screen mx-auto">
+      <main className="md:max-w-[2100px] min-h-screen mx-auto bg-mode">
         <Outlet />
       </main>
     </>

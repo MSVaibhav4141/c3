@@ -6,6 +6,7 @@
   --color-grey-400:#383838; 
   --color-grey-50:#FDFDFD;
   --color-purple-500:#D67EFF;
+  --color-purple-200:#D67EFF;
   --color-purple-100:#F0E7F3;
   --color-purple-50:#FAEFFF;
   --color-grey-100:#B7B7B7;
@@ -16,11 +17,31 @@
   --color-signup-bg:#F2D7FF;
   --color-modal:#FFFFFF;
   --color-navbar:#FFFFFF;
+  --color-mode:#FFFFFF;
+}
+.dark{
+  --color-purple-300:#A553CB;
+  --color-grey-400:#f7f7f7; 
+  --color-grey-50:#FDFDFD;
+  --color-purple-200:#353535;
+  --color-purple-500:#A553CB;
+  --color-purple-100:#0e0d0e;
+  --color-purple-50:#161616;
+  --color-grey-100:#B7B7B7;
+  --color-border-color:#282828;
+  --color-light:#F8F7F7;
+  --color-side-item:#f3d7ff;
+  --color-save-card:#1f1f1f;
+  --color-signup-bg:#A553CB;
+  --color-modal:#151515;
+  --color-navbar:#FFFFFF;
+  --color-mode:#000000;
 }
 
 body{
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
+  background-color: var(--color-mode);
 }
 
 .masonry-column {

@@ -1,6 +1,11 @@
-import { cloneElement, Dispatch, ReactElement, SetStateAction } from "react";
+import { cloneElement, Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
 import { CloseIcon, SearchIcon } from "../Icons";
 import { Input } from "../Input";
+import { useDebouncing } from "../../../hooks/useDebouncing";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getSearchResult } from "../../../api/getSearchResult";
+import { throwAxiosError } from "../../../handleAxioserr";
+import { Link } from "react-router-dom";
 
 type NavModalProp<T extends string> = {
   isAuth: boolean | undefined;
@@ -11,6 +16,9 @@ type NavModalProp<T extends string> = {
   hamStyle: Record<T, T>;
   navItems: ReactElement<{ className?: string }>;
   isHam: T;
+  isResultLoad:boolean,
+  finalResult:{id:string, content:string}[],
+  isSuccess?:boolean
 };
 export const SearchModal = ({
   searchInput,
@@ -19,14 +27,20 @@ export const SearchModal = ({
   hamStyle,
   serachOn,
   setInput,
+  isSuccess,
   navItems,
   isHam,
+  isResultLoad,
+  finalResult
 }: NavModalProp<string>) => {
+
+  
+
   return (
     <>
       {isAuth ? (
         <div
-          className={`h-screen w-full fixed z-[101] bg-modal transition-all ease-in-out duration-300 ${hamStyle[serachOn]} p-2`}
+          className={`h-screen w-full fixed z-[101] bg-modal transition-all ease-in-out duration-300 ${hamStyle[serachOn]} p-2 sm:hidden block`}
         >
           <div className={`w-full flex justify-end`}>
             <button onClick={() => setSearch("searchOff")}>
@@ -34,15 +48,24 @@ export const SearchModal = ({
             </button>
           </div>
           <Input
-            className="block w-full mt-3 outline-2 focus:outline-3 focus:border-3 !border-gray-400"
+            className="block w-full mt-3 outline-2 focus:outline-3 focus:border-3 !border-gray-400 !w-full"
             size="md"
             placeholder="Search anything"
             input={searchInput}
             setInput={setInput}
+            isResultLoad={isResultLoad}
             startIcon={
               <SearchIcon className="block text-gray-600" stroke={1} />
             }
           />
+           <div className="mx-auto rounded-sm w-[97%]  bg-white shadow-lg block sm:hidden ">
+           
+      {finalResult && finalResult.length === 0 ? isSuccess && <div className="w-full shadow-md bg-gray-200 px-2 m-2 mt-2 rounded-md text-center py-3 mx-auto">No result found</div> : 
+      !isResultLoad && finalResult.map((i, index) => (
+        <Link className="flex justify-center" to={`/search/${i.id}`}><div className="w-full shadow-md bg-gray-200 hover:bg-purple-200 px-2 m-2 mt-2 rounded-md text-center py-3" key={index}>{i.content}</div></Link>
+      ))
+      }
+    </div>
         </div>
       ) : (
         <div

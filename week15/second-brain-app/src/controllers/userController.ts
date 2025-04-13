@@ -12,6 +12,7 @@ import { ContentModel } from "../models/contentModel"
 import { LinkModel } from "../models/linkSchema";
 import { getType, searchDocuments, sendDocToLLm, storeDocument } from "../llms/vectorDb";
 import { Tags } from "../models/tagsModel";
+import axios from "axios";
 
 const UserSchema  = z.object({
     name:z.string().min(3, {message:"Name must be of 3 characters"}).max(10,{message:"Name must be under 10 characters"}),
@@ -25,6 +26,8 @@ const ContentSchema = z.object({
     type: z.string(),
     title: z.string(),
     tags: z.array(z.string()),
+    body: z.string().optional(),
+    html:z.string().optional()
 })
 
 
@@ -89,6 +92,25 @@ export const createContent = asyncErrorHandler(
         checkValidSchema<ReqContent>(req.body, ContentSchema)
 
         const id = req.userId
+        if(req.body.type === 'YouTube')
+        {
+            const YT_Id = (req.body.link)?.split('v=')[1] 
+            const YT_Mob_Id_Array =  (req.body.link)?.split('si=')[0].split('/')
+            const YT_Id_Mob =  YT_Mob_Id_Array && YT_Mob_Id_Array[YT_Mob_Id_Array?.length - 1] 
+
+            if(YT_Id){
+                req.body = {...req.body, link:YT_Id}
+            }else{
+                req.body = {...req.body, link:YT_Id_Mob}
+            }
+        }
+
+        if(req.body.type === 'X (formerly Twitter)'){
+            const X_Id = (req.body.link)?.split('status/')[1].split('?')[0]
+
+            req.body = {...req.body, link:X_Id}
+
+        }
         const content =  await ContentModel.create({...req.body,userId:id})
 
         await storeDocument(content._id.toString(), content.title as string)
@@ -103,7 +125,7 @@ export const createContent = asyncErrorHandler(
 export const getContent = asyncErrorHandler(
     async(req:Request<{id:string}>, res, next) => {
        checkValidSchema(req.params.id, z.string())
-        
+
        
        const userId:string = req.userId as string;
        const {id : displayUser} = req.params;
@@ -121,7 +143,7 @@ export const getContent = asyncErrorHandler(
             })
         }
        }
-
+       console.log(req.params.id)
        if(userId === displayUser){
         const userContent = await ContentModel.find({userId})
 
@@ -190,6 +212,8 @@ export const getShareLinkContent = asyncErrorHandler(
 export const searchDoc = asyncErrorHandler(
     async(req:Request<{},{},{text:string}>, res ,next) => {
         const {text} = req.body;
+
+        if(text.length === 0) return ;
 
         const result = await searchDocuments(text)
 

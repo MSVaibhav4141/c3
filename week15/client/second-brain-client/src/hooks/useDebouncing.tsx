@@ -1,27 +1,23 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
-type debouceProp =  HTMLInputElement | null
+type debouceProp =  {
+    input:string,
+    delay:number
+}
 
 
 export const useDebouncing = (props:debouceProp) => {
-    const element = props;
+    const {input, delay} = props;
+    const [value, setValue] = useState(input)
     // const time = useRef<number>(0)
     useEffect(() => {
+       const timer =  setTimeout(() => {
+            setValue(input)
+        }, delay);
+        
+        return () => clearTimeout(timer)
+    }, [delay,input])
 
-        if(element){
-            element.addEventListener('change', () => {
-                setTimeout(() => {
-                    console.log('sneding')
-                },2000)
-            })
-            return () => (
-                element.removeEventListener('change', () => {
-                    setTimeout(() => {
-                        console.log('removing')
-                    },2000)
-                })
-            )
-        }
+    return value;
 
-    }, [element])
 }

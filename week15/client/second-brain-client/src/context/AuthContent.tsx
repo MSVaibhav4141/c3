@@ -8,10 +8,17 @@ type AuthStoreType = {
     username:string|undefined,
     loading:boolean,
     login: (token:string) => void,
-    logout: () => void
+    logout: () => void,
+    id:string | undefined
 }
 
-const checkIfAuth = async() => { 
+type Response = {
+    isAuth:true | false,
+    username:string|undefined,
+    id:string|undefined
+}
+
+const checkIfAuth = async():Promise<Response> => { 
     const response = await axios.get(`${URL}/isauth`,{
         headers: {
             Authorization : localStorage.getItem('authorization'),
@@ -28,11 +35,12 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
 
     const [isAuth, setAuth] = useState<boolean | undefined>(undefined)
     const [username, setName] = useState<string | undefined>(undefined)
+    const [id, setId] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(true)
 
     const {data} = useQuery({
         queryKey:['isAuth'],
-        queryFn: checkIfAuth,
+        queryFn: checkIfAuth
     })
 
     const login = (token:string) => {
@@ -48,12 +56,13 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
     useEffect(() => {
         setAuth(data?.isAuth)
         setName(data?.username)
-        setLoading(false)
+        setId(data?.id)
+        data && setLoading(false)
     }, [data])
 
 
     return<>
-    <AuthContext.Provider value={{loading,isAuth,login,logout,username, }}>
+    <AuthContext.Provider value={{loading,isAuth,login,logout,username,id }}>
     {children}
     </AuthContext.Provider>
     </>

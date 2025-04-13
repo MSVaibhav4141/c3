@@ -13,14 +13,11 @@ const actionState:Record<string, string> = {
 }
 
 const defaultStyle = {
-    style:'whitespace-nowrap -right-3 z-[110] rounded-md bg-modal shadow-md text-sm p-2 font-semibold absolute top-12 border-1 border-gray-200 transition duration-150 origin-top'
+    style:'whitespace-nowrap -right-3 z-[110] rounded-md bg-modal shadow-md text-grey-400 text-sm p-2 font-semibold absolute top-12 border-1 border-border-color transition duration-150 origin-top'
 }
 
 export const BadgeModal = (props:BadgeProps) => {
     
-    
- 
-   
   return (
     <>
       <div ref={props.reference} className="relative pointer-events-auto">
@@ -33,7 +30,7 @@ export const BadgeModal = (props:BadgeProps) => {
         <div className={`${defaultStyle.style} ${actionState[props.open.toString()]}`}>
             
           {props.items.map((i,index) => cloneElement(i,{
-            className:`${index === 0 ? 'flex items-end' : ''} mt-2 hover:bg-purple-200 p-2 rounded-md cursor-pointer transition duration-250 block pointer-events-auto w-full`,
+            className:`${index === 0 ? 'flex items-end' : ''} mt-2 hover:bg-purple-200/50 p-2 rounded-md cursor-pointer transition duration-250 block pointer-events-auto w-full`,
           }))}
         </div>
       </div>

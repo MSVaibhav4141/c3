@@ -1,6 +1,6 @@
+import { Outlet } from "react-router-dom";
 import { BKIcon, Home, XIcon, YTIcon } from "../../Components/ui/Icons";
 import { SideBar } from "../../Components/ui/Sidebar/SideBar";
-import { DashboardHome } from "./Home";
 
 export const Dashboard = () => {
   return (
@@ -9,10 +9,10 @@ export const Dashboard = () => {
         <SideBar
           width="70"
           SideItem={<Home />}
-          ItemIcon={[<Home />, <XIcon />, <YTIcon />, <BKIcon stroke={2} />]}
+          ItemIcon={[<Home />, <YTIcon />, <XIcon />,<BKIcon stroke={2} />]}
         />
         <section className="w-full">
-          <DashboardHome />
+          <Outlet />
         </section>
       </div>
     </>

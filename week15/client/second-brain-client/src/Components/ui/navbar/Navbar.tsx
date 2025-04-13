@@ -17,6 +17,10 @@ import { useCloseOnOutClick } from "../../../hooks/closeOutsideClick";
 import { Link } from "react-router-dom";
 import { Button } from "../Button";
 import { ToggleSwitch } from "../ToggleSwitch";
+import { useDebouncing } from "../../../hooks/useDebouncing";
+import { useMutation } from "@tanstack/react-query";
+import { getSearchResult } from "../../../api/getSearchResult";
+import { throwAxiosError } from "../../../handleAxioserr";
 
 interface NavProps {
   logo: ReactElement;
@@ -32,7 +36,7 @@ export const Navbar = (props: NavProps): ReactElement => {
   const [isHam, setHam] = useState<string>("close");
   const [serachOn, setSearch] = useState<string>("searchOff");
 
-  const [opebBadge, setBadge] = useState(false);
+  const [openBadge, setBadge] = useState(false);
 
   const hamStyle: Record<string, string> = {
     open: "top-[65px] opacity-100",
@@ -44,7 +48,11 @@ export const Navbar = (props: NavProps): ReactElement => {
   const BadgeItems = [
     <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
     <span>Profile</span>,
-    <span>Theme</span>,
+    <span onClick={() => {
+      document.querySelector('body')?.className === 'vsc-initialized dark'?
+      document.querySelector('body')?.classList.remove('dark'):
+      document.querySelector('body')?.classList.add('dark')
+    }}>Theme</span>,
     <span onClick={() => setOpen(true)}>Add Conent</span>,
     <span>Bookmarks</span>,
     <Button
@@ -67,13 +75,41 @@ export const Navbar = (props: NavProps): ReactElement => {
   const isClick = useCloseOnOutClick(badgeRef.current);
 
   useEffect(() => {
+    console.log(isClick)
     setBadge(!isClick);
   }, [isClick]);
+
+  const search = useDebouncing({input:searchInput, delay:500})
+
+    const [searchResult, setResult] = useState<{id:string, content:string}[]>([])
+    
+      const getSearch =  useMutation({
+        mutationFn:getSearchResult,
+        onSuccess:(data) => {
+          setResult( data.message);
+          const prevSearch = localStorage.getItem('search')
+          if(prevSearch){
+            const array = JSON.parse(prevSearch)
+            localStorage.setItem('search', JSON.stringify([...array, search]))
+          }else{
+          localStorage.setItem('search', JSON.stringify([search]))
+          }
+        },
+        onError:throwAxiosError
+      })
+  
+  
+    
+     
+    useEffect(() => {
+      search.trim().length > 0 && getSearch.mutate({input:searchInput})
+    },[search])
+    
 
   return (
     <>
       <div
-        className={`h-[70px] top-[34px] flex md:max-w-[2100px] w-full bg-white z-100 justify-between px-4 md:px-9 border-b-1 border-border-color items-center fixed left-[50%] -translate-1/2`}
+        className={`h-[70px] top-[34px] flex md:max-w-[2100px] w-full bg-mode z-100 justify-between px-4 md:px-9 border-b-1 border-border-color items-center fixed left-[50%] -translate-1/2`}
       >
         <div className="text-2xl font-semibold cursor-default">
           {isAuth ? <>{props.logo}</> : <Link to={"/"}>{props.logo}</Link>}
@@ -97,6 +133,9 @@ export const Navbar = (props: NavProps): ReactElement => {
                   placeholder="Search anything"
                   input={searchInput}
                   setInput={setInput}
+                  isResultLoad={getSearch.isPending}
+                  finalResult={searchResult}
+                  isSuccess={getSearch.isSuccess}
                   startIcon={
                     <SearchIcon
                       className="hidden sm:block text-gray-500"
@@ -112,7 +151,7 @@ export const Navbar = (props: NavProps): ReactElement => {
                 </span>
                 <BadgeModal
                   reference={badgeRef}
-                  open={opebBadge}
+                  open={openBadge}
                   setOpen={setBadge}
                   items={BadgeItems}
                 />
@@ -145,7 +184,10 @@ export const Navbar = (props: NavProps): ReactElement => {
         setSearch={setSearch}
         hamStyle={hamStyle}
         serachOn={serachOn}
+        isResultLoad={getSearch.isPending}
+        finalResult={searchResult}
         setInput={setInput}
+        isSuccess={getSearch.isSuccess}
         navItems={props.navItems}
         isHam={isHam}
       />

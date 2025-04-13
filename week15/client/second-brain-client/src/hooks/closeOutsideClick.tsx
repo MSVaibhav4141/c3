@@ -11,7 +11,7 @@ export const useCloseOnOutClick = (element:HTMLElement | null) => {
             if(element && !element.contains(e.target as Node)){
                 setClick( true);
             }else{
-                setClick(false)
+                element && setClick(false)
             }
         }
 

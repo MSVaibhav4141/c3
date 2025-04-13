@@ -4,13 +4,15 @@ import { useEffect } from "react"
 
 export const PrivateRoue = () => {
 
-    const {isAuth} = useAuth()
+    const {isAuth, loading} = useAuth()
     const navigate = useNavigate()
+    
     useEffect(() => {
-        if(!isAuth){
+        console.log(isAuth, loading)
+        if(!isAuth && !loading){
             navigate('/signin')
         }
-    }, [isAuth])
+    }, [isAuth,loading])
 
     return <>
     {isAuth && <Outlet />}

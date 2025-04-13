@@ -4,23 +4,28 @@ import { Dashboard } from "./Pages/dashbord/Dashboard";
 import { SignIn } from "./Pages/auth/Signin";
 import { SignUp } from "./Pages/auth/Signup";
 import { ToastContainer } from "react-toastify";
-import { useAuth } from "./context/AuthContent";
 import { PrivateRoue } from "./routes/ProtectedRoue";
 import { MainLayout } from "./Components/layout/MainLayout";
+import { YoutubePage } from "./Pages/dashbord/YoutubePage";
+import { DashboardHome } from "./Pages/dashbord/Home";
+import { Xpage } from "./Pages/dashbord/Xpage";
+import { Bookmarks } from "./Pages/dashbord/Bookmark";
 
 const App = () => {
 
-  const { loading } = useAuth();
-
   return (
     <>
-      {!loading && (
         <>
           <Routes>
             <Route element={<MainLayout />}>
              {/* Private routes */}
             <Route element={<PrivateRoue />}>
-              <Route path="/user/:name" element={<Dashboard />} />
+              <Route path="/user/:name" element={<Dashboard />} >
+              <Route index element={<DashboardHome />}/>
+              <Route path="YT" element={<YoutubePage />} />
+              <Route path="X" element={<Xpage />} />
+              <Route path="Bookmarks" element={<Bookmarks />} />
+              </Route>
             </Route>
 
             {/* Public routes */}
@@ -32,7 +37,6 @@ const App = () => {
 
           <ToastContainer stacked />
         </>
-      )}
     </>
   );
 };
