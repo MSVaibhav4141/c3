@@ -238,3 +238,23 @@ export const getTypeLink = asyncErrorHandler(
         })
     }
 )
+
+
+export const bookMark = asyncErrorHandler(
+    async(req:Request<{},{},{id:string}>,res ,next) => {
+        const postId = req.body.id;
+
+        const post = await ContentModel.findById(postId);
+
+        if(post && post?.isBookMark){
+            post.isBookMark = false
+        }else if(post && !post?.isBookMark){
+            post.isBookMark = true
+        }
+
+        await post?.save();
+
+        res.status(200).json({
+            message:`Bookmark ${post?.isBookMark ? 'added' : 'removed'}`
+        })
+    })

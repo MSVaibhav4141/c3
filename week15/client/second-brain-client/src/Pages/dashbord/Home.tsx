@@ -16,7 +16,7 @@ export const DashboardHome = () => {
  
   const {id} = useAuth()
 
-  const { data } = useQuery({
+  const { data, isSuccess,isLoading } = useQuery({
     queryKey: ["user-content", id],
     queryFn: () => getContent(id),
     staleTime:2 * 60 * 1000,
@@ -24,8 +24,7 @@ export const DashboardHome = () => {
   });
 
  
-// console.log(userContent.data.content)
-
+console.log(data,id)
   return (
     <>
       <Masonry
@@ -33,7 +32,8 @@ export const DashboardHome = () => {
         className="flex w-full gap-4 p-6"
         columnClassName="masonry-column"
       >
-        {data && data.content?.map((i:any, index:number) => (
+        {isLoading && <>Loading</>}
+        {isSuccess && data.content?.map((i:any, index:number) => (
           <div key={index} className="break-inside-avoid mb-4">
           <Cards data={i} />
         </div>

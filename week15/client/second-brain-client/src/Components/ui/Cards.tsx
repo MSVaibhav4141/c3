@@ -1,6 +1,11 @@
 import { TwitterTweetEmbed } from "react-twitter-embed";
-import { BKIcon, ShareIcon } from "./Icons";
+import { BKIcon, LoaderBlinker, MenuDots, ShareIcon } from "./Icons";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createBookmark } from "../../api/createBookmark";
+import { toast } from "react-toastify";
+import { throwAxiosError } from "../../handleAxioserr";
+import { useAuth } from "../../context/AuthContent";
 
 interface CardProps {
   data:any
@@ -9,15 +14,34 @@ export const Cards = (props: CardProps) => {
 
   const [loading, setLoading] = useState(true);
 
+  const {id} = useAuth()
+  const {link, tags,body, title, type,userId, _id,isBookMark} = props.data
 
-  const {link, tags,body, title, type,userId} = props.data
+  const queryClient = useQueryClient()
+
+  const bookMarkMutation = useMutation({
+    mutationFn:createBookmark,
+    onSuccess:(data) => {
+      queryClient.invalidateQueries({queryKey:["user-content", id]})
+      toast.success(data.message)
+    },
+    onError:throwAxiosError
+  })
+
+  const handleBookmark = (id:string) => {
+    bookMarkMutation.mutate({
+      id
+    })
+
+  } 
   return (
     <>
       <div
         className={`p-3 w-full bg-purple-50 border-2 border-border-color border-[0.8px] text-grey-400 inset-shadow-sm rounded-lg mb-3  hover:bg-save-card hover:shadow-lg hover:translate-1 trasition duration-150`}
       >
-        <div className="flex justify-between h-15 font-semibold text-lg items-center">
-          <p>{title.length > 60 ? (<>{title.substring(0,60)}...</>) : <>{title}</>}</p>
+        <div className="flex justify-between h-15 font-semibold text-sm lg:text-md xl:text-[1.1rem]  items-center">
+          <p className="w-[90%]">{title.length > 50 ? (<>{title.substring(0,50)}...</>) : <>{title}</>}</p>
+          <MenuDots className="w-[10%] text-lg" stroke={3} />
         </div>
         {props.data.type === "X (formerly Twitter)" && (
           <>
@@ -37,7 +61,9 @@ export const Cards = (props: CardProps) => {
             <>
               <div className="h-45 mt-1">
                 <a href={`https://www.youtube.com/watch?v=${link}`} target="_blank">
+               
                 <iframe
+                  onLoad={() => setLoading(false)}
                   className="w-full h-full rounded-md"
                   src={`https://www.youtube.com/embed/${link}`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -53,8 +79,8 @@ export const Cards = (props: CardProps) => {
             <span className="mr-2">
               <ShareIcon stroke={1.5} className="text-grey-400" />
             </span>
-            <span>
-              <BKIcon stroke={1.5} className="text-grey-400"/>
+            <span onClick={() => handleBookmark(_id)}>
+              {bookMarkMutation.isPending ? <LoaderBlinker /> : <BKIcon fill={`${isBookMark ? 'currentColor' : 'none'}`} stroke={1.5} className={`text-grey-400 hover:text-purple-400 transition duration-150 ${isBookMark ? 'text-purple-400' : ''}`}/>}
             </span>
           </div>
         </div>

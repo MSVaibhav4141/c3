@@ -49,12 +49,12 @@ export const Navbar = (props: NavProps): ReactElement => {
     <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
     <span>Profile</span>,
     <span onClick={() => {
-      document.querySelector('body')?.className === 'vsc-initialized dark'?
+      document.querySelector('body')?.classList.contains('dark') ?
       document.querySelector('body')?.classList.remove('dark'):
       document.querySelector('body')?.classList.add('dark')
     }}>Theme</span>,
     <span onClick={() => setOpen(true)}>Add Conent</span>,
-    <span>Bookmarks</span>,
+    <Link to={`/user/ll/Bookmarks`}><span>Bookmarks</span></Link>,
     <Button
       onClick={() => {
         // logout();
@@ -125,7 +125,7 @@ export const Navbar = (props: NavProps): ReactElement => {
                   />
                 </div>
                 <Modal isOpen={open} setOpen={setOpen} opacity={50} >
-                  <ContentModal />
+                  <ContentModal setOpen={setOpen}/>
                 </Modal>
                 <Input
                   className="hidden sm:block"

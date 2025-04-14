@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -8,9 +8,15 @@ import { throwAxiosError } from "../../handleAxioserr";
 import { getTypes } from "../../api/getType";
 import { TagInput } from "./TagInput";
 import { ToggleSwitch } from "./ToggleSwitch";
+import { useAuth } from "../../context/AuthContent";
 
-export const ContentModal = () => {
 
+type thisModalProp = {
+  setOpen:Dispatch<SetStateAction<boolean>>
+}
+export const ContentModal = (props:thisModalProp) => {
+
+  const {id} = useAuth()
   //Inital value for payloads
   const initialLink = {
     link: "",
@@ -97,7 +103,8 @@ export const ContentModal = () => {
     mutationFn: createContent,
     onSuccess:(data) => {
       toast.success(data.message)
-      queryClient.invalidateQueries({queryKey:['add','content']})
+      queryClient.invalidateQueries({queryKey:["user-content",id]})
+      props.setOpen(false)
     },
     onError:throwAxiosError
   });

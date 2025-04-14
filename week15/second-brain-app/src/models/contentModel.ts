@@ -28,6 +28,9 @@ const contentSchema = new mongoose.Schema({
   html: {
     type: String
   },
+  isBookMark:{
+    type:Boolean
+  }
 });
 
 export const ContentModel = model("Content", contentSchema);

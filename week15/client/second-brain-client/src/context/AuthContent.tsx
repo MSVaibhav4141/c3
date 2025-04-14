@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { createContext, ReactElement, useContext, useEffect, useState } from "react"
 import { URL } from "../api/signIn"
@@ -38,14 +38,21 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
     const [id, setId] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(true)
 
-    const {data} = useQuery({
+    const queryClient = useQueryClient()
+
+    const {data, isLoading} = useQuery({
         queryKey:['isAuth'],
-        queryFn: checkIfAuth
+        queryFn: checkIfAuth,
+        retry:false
     })
 
     const login = (token:string) => {
+        if(token)
+        {
         localStorage.setItem('authorization', token)
+        queryClient.invalidateQueries({queryKey:['isAuth']})
         setAuth(true)
+    }
     }
 
     const logout = () => {
@@ -57,10 +64,11 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
         setAuth(data?.isAuth)
         setName(data?.username)
         setId(data?.id)
-        data && setLoading(false)
     }, [data])
 
-
+    useEffect(() => {
+        setLoading(false)
+    }, [isLoading])
     return<>
     <AuthContext.Provider value={{loading,isAuth,login,logout,username,id }}>
     {children}

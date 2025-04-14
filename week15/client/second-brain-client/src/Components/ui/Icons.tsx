@@ -23,14 +23,20 @@ export const YTIcon = () => (
 
 )
 
-export const BKIcon = (props:{stroke:number, className?:string}) => (
-    <svg className={`w-6 h-6 text-inherit ${props.className}`} aria-hidden="true" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+export const BKIcon = (props:{stroke:number, className?:string, fill?:string}) => (
+    <svg className={`w-6 h-6 text-inherit ${props.className}`} aria-hidden="true" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill={props.fill ? props.fill :'none'} viewBox="0 0 24 24">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width={`${props.stroke}`}     d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"/>
   </svg>
   
 
 )
 
+export const MenuDots = (props:{stroke:number, className?:string}) => (
+  <svg className={`w-6 h-6 text-inherit ${props.className}`}  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-width={`${props.stroke}`}  d="M12 6h.01M12 12h.01M12 18h.01"/>
+</svg>
+
+)
 export const ShareIcon = (props:{stroke:number, className?:string}) => (
 
 <svg className={`w-6 h-6 text-black ${props.className}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -91,4 +97,11 @@ export const GemeniIcon = (props:{className?:string}) => (
 
   <img  src="/assets/gemini.png" alt="gemini-logo"  className="w-full h-full object-contain"/>
   </div>
+)
+
+export const LoaderBlinker = () => (
+  <span className="absolute right-[40px] top-1/2 -translate-y-1/2 flex size-3">
+           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-500 opacity-75"></span>
+           <span className="relative inline-flex size-3 rounded-full bg-purple-500"></span>
+           </span>
 )

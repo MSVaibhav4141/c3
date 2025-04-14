@@ -11,11 +11,11 @@ export const PrivateRoue = () => {
         console.log(isAuth, loading)
         if(!isAuth && !loading){
             navigate('/signin')
+            return;
         }
     }, [isAuth,loading])
 
     return <>
     {isAuth && <Outlet />}
-    
     </>
 }
