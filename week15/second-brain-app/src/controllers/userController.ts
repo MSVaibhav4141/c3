@@ -155,19 +155,28 @@ export const getContent = asyncErrorHandler(
 )
 
 export const createShareableLink =asyncErrorHandler( 
-    async(req:Request<{},{},{contentId:string}>, res, next) => {
-    checkValidSchema<{contentId:string}>(req.body, z.object({contentId: z.string()}))
+    async(req:Request<{contentId:string},{},{}>, res, next) => {
+    checkValidSchema<string>(req.params.contentId,  z.string())
 
-    const {contentId} = req.body;
-
+    const {contentId} = req.params;
+    
     const hash = uuidv4().toString();
+
+    const isExists = await LinkModel.find({contentId})
+
+    if(isExists.length > 0){
+        res.status(200).json({
+            link:isExists[0].hash.toString()
+        })
+        return;
+    }
 
     const linkCreated = await LinkModel.create({
         hash,
         contentId
     })    
     res.status(200).json({
-        link:linkCreated._id.toString()
+        link:linkCreated.hash.toString()
     })
 })
 
@@ -181,6 +190,17 @@ export const createTag = asyncErrorHandler(
         message:'Tags are created'
      })
         
+    }
+)
+
+export const getAllSharedPost = asyncErrorHandler(
+    async (req, res, next) => {
+        const posts = await LinkModel.find({}).populate('contentId')
+
+        const postsOnly = posts.map(i => i.contentId)
+        res.status(200).json({
+            posts:postsOnly
+        })
     }
 )
 export const getShareLinkContent = asyncErrorHandler(

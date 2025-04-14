@@ -6,11 +6,14 @@ import { createBookmark } from "../../api/createBookmark";
 import { toast } from "react-toastify";
 import { throwAxiosError } from "../../handleAxioserr";
 import { useAuth } from "../../context/AuthContent";
+import { getShareLink } from "../../api/getSharerableLink";
 
 interface CardProps {
   data:any
 }
 export const Cards = (props: CardProps) => {
+
+  const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
   const [loading, setLoading] = useState(true);
 
@@ -28,12 +31,25 @@ export const Cards = (props: CardProps) => {
     onError:throwAxiosError
   })
 
+  const getShareableLink = useMutation({
+    mutationFn:getShareLink,
+    onSuccess:async(data) => {
+      await navigator.clipboard.writeText(`${FRONTEND_URL}/share/${data.link}`)
+      toast.success('Link is copied to clipboard')
+    },
+    onError:throwAxiosError
+  })
   const handleBookmark = (id:string) => {
     bookMarkMutation.mutate({
       id
     })
-
   } 
+
+  const handleSharePost = (id:string) => {
+    getShareableLink.mutate({
+      id
+    })
+  }
   return (
     <>
       <div
@@ -76,8 +92,8 @@ export const Cards = (props: CardProps) => {
         <div className="flex justify-between w-full h-10 items-center">
           <p className="text-grey-100 text-thin">Added 2 days ago</p>
           <div className="flex items-center ">
-            <span className="mr-2">
-              <ShareIcon stroke={1.5} className="text-grey-400" />
+            <span onClick={() => handleSharePost(_id)} className="mr-2">
+              <ShareIcon stroke={1.5} className="text-grey-400 hover:text-purple-400 transition duration-150" />
             </span>
             <span onClick={() => handleBookmark(_id)}>
               {bookMarkMutation.isPending ? <LoaderBlinker /> : <BKIcon fill={`${isBookMark ? 'currentColor' : 'none'}`} stroke={1.5} className={`text-grey-400 hover:text-purple-400 transition duration-150 ${isBookMark ? 'text-purple-400' : ''}`}/>}

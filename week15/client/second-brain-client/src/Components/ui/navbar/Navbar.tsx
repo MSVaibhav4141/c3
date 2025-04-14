@@ -45,14 +45,22 @@ export const Navbar = (props: NavProps): ReactElement => {
     searchOff: "top-[-1000px] opacity-0",
   };
 
+  const handleTheme = () => {
+    
+    const isDark = document.querySelector('body')?.classList.contains('dark')
+    console.log(isDark)
+    if(isDark){
+      localStorage.setItem('theme','light')
+      document.querySelector('body')?.classList.remove('dark')
+    }else{
+      localStorage.setItem('theme', 'dark')
+      document.querySelector('body')?.classList.add('dark')
+    }
+  }
   const BadgeItems = [
     <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
     <span>Profile</span>,
-    <span onClick={() => {
-      document.querySelector('body')?.classList.contains('dark') ?
-      document.querySelector('body')?.classList.remove('dark'):
-      document.querySelector('body')?.classList.add('dark')
-    }}>Theme</span>,
+    <span onClick={handleTheme}>Theme</span>,
     <span onClick={() => setOpen(true)}>Add Conent</span>,
     <Link to={`/user/ll/Bookmarks`}><span>Bookmarks</span></Link>,
     <Button

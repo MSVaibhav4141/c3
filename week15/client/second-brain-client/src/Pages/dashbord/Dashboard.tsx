@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { BKIcon, Home, XIcon, YTIcon } from "../../Components/ui/Icons";
+import { BKIcon, Home, ShareLink, XIcon, YTIcon } from "../../Components/ui/Icons";
 import { SideBar } from "../../Components/ui/Sidebar/SideBar";
 
 export const Dashboard = () => {
@@ -9,7 +9,7 @@ export const Dashboard = () => {
         <SideBar
           width="70"
           SideItem={<Home />}
-          ItemIcon={[<Home />, <YTIcon />, <XIcon />,<BKIcon stroke={2} />]}
+          ItemIcon={[<Home />, <YTIcon />, <XIcon />,<BKIcon stroke={2} />,<ShareLink stroke={2}/>]}
         />
         <section className="w-full">
           <Outlet />

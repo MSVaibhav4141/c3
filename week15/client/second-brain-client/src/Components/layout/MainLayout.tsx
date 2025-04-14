@@ -7,6 +7,7 @@ import { Button } from "../ui/Button";
 
 export const MainLayout = () => {
     
+  
       const navigate = useNavigate();
 
       const NavItems = ({ className }: { className?: string }) => (

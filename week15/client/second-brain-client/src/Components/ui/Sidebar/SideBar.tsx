@@ -11,7 +11,7 @@ interface SideBarProps {
 // const defaultItemStyle = {
 //     style:
 // }
-const link = ['','YT', 'X', 'Bookmarks']
+const link = ['','YT', 'X', 'Bookmarks','shared/content']
 export const SideBar =(props:SideBarProps) => {
     return(
         <>
