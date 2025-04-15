@@ -1,3 +1,9 @@
+  export const LogoNavbar = ({className}:{className?:string}) => (
+        <>
+          <span className={`text-grey-400 font-bold text-xl ${className}`}>Brainly</span>
+          <span className={`text-purple-300 ${className}`}>SB</span>
+        </>
+      );
 
 export const Home = () => (
     <svg className="w-6 h-6 text-inherit" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -93,7 +99,7 @@ export const CrossIcon = (props:{stroke:number , className?:string}) => (
 )
 
 export const ShareLink = (props:{stroke:number , className?:string}) => (
-  <svg className={`w-6 h-6 text-black ${props.className}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <svg className={`w-6 h-6  text-inherit`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width={`${props.stroke}`} d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
 </svg>
 
@@ -105,9 +111,16 @@ export const GemeniIcon = (props:{className?:string}) => (
   </div>
 )
 
-export const LoaderBlinker = () => (
-  <span className="absolute right-[40px] top-1/2 -translate-y-1/2 flex size-3">
+export const LoaderBlinker = ({className}:{className?:string}) => (
+  <span className={`absolute right-[40px] top-1/2 -translate-y-1/2 flex size-3 ${className}`}>
            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-500 opacity-75"></span>
            <span className="relative inline-flex size-3 rounded-full bg-purple-500"></span>
            </span>
+)
+
+export const BackIcon = (props:{stroke:number , className?:string}) => (
+  <svg className={`w-6 h-6 text-black ${props.className}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width={`${props.stroke}`} d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+</svg>
+
 )

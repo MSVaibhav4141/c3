@@ -12,6 +12,7 @@ import { Xpage } from "./Pages/dashbord/Xpage";
 import { Bookmarks } from "./Pages/dashbord/Bookmark";
 import { useEffect } from "react";
 import { SharedPost } from "./Pages/dashbord/SharedPost";
+import { SharedPostPage } from "./Pages/SharePost";
 
 const App = () => {
 
@@ -55,6 +56,7 @@ const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/share/:hash" element={<SharedPostPage />} />
             </Route>
           </Routes>
 

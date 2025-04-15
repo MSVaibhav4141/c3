@@ -9,7 +9,8 @@ import { useAuth } from "../../context/AuthContent";
 import { getShareLink } from "../../api/getSharerableLink";
 
 interface CardProps {
-  data:any
+  data:any,
+  ytHeight?:string
 }
 export const Cards = (props: CardProps) => {
 
@@ -61,21 +62,29 @@ export const Cards = (props: CardProps) => {
         </div>
         {props.data.type === "X (formerly Twitter)" && (
           <>
+          <div className="w-100vw">
             {loading && (
         <div className="mb-2 text-gray-500 animate-pulse">
           Loading tweet...
         </div>
       )}
            <TwitterTweetEmbed 
+           options={
+            {
+              width:'100%',
+              margin:'0 auto'
+            }
+           }
            onLoad={() => setLoading(false)}
            tweetId={link}/>
+           </div>
           </>
         )   
        }
        {props.data.type === 'YouTube' && (
           (
             <>
-              <div className="h-45 mt-1">
+              <div className={`h-45 mt-1 ${props.ytHeight}`}>
                 <a href={`https://www.youtube.com/watch?v=${link}`} target="_blank">
                
                 <iframe
@@ -91,12 +100,14 @@ export const Cards = (props: CardProps) => {
         {body && <div className="rounded-md bg-purple-200/50 p-2">{body}</div>}
         <div className="flex justify-between w-full h-10 items-center">
           <p className="text-grey-100 text-thin">Added 2 days ago</p>
-          <div className="flex items-center ">
-            <span onClick={() => handleSharePost(_id)} className="mr-2">
-              <ShareIcon stroke={1.5} className="text-grey-400 hover:text-purple-400 transition duration-150" />
+          <div className="flex items-center">
+            <span onClick={() => handleSharePost(_id)} className="mr-2 relative">
+             {getShareableLink.isPending ? <LoaderBlinker className="top-0 left-1/2 -translate-x-1/2"/> :  
+             <ShareIcon stroke={1.5} className="text-grey-400 hover:text-purple-400 transition duration-150" />}
             </span>
-            <span onClick={() => handleBookmark(_id)}>
-              {bookMarkMutation.isPending ? <LoaderBlinker /> : <BKIcon fill={`${isBookMark ? 'currentColor' : 'none'}`} stroke={1.5} className={`text-grey-400 hover:text-purple-400 transition duration-150 ${isBookMark ? 'text-purple-400' : ''}`}/>}
+            <span onClick={() => handleBookmark(_id)} className="relative">
+              {bookMarkMutation.isPending ? <LoaderBlinker className="top-0"/> : 
+              <BKIcon fill={`${isBookMark ? 'currentColor' : 'none'}`} stroke={1.5} className={`text-grey-400 hover:text-purple-400 transition duration-150 ${isBookMark ? 'text-purple-400' : ''}`}/>}
             </span>
           </div>
         </div>

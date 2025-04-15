@@ -1,13 +1,13 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Navbar } from "../ui/navbar/Navbar";
 import { Button } from "../ui/Button";
+import { LogoNavbar } from "../ui/Icons";
 
 
 
 
 export const MainLayout = () => {
     
-  
       const navigate = useNavigate();
 
       const NavItems = ({ className }: { className?: string }) => (
@@ -29,12 +29,6 @@ export const MainLayout = () => {
         </div>
       );
 
-      const LogoNavbar = () => (
-        <>
-          <span className="text-grey-400 font-bold text-xl">Brainly</span>
-          <span className="text-purple-300">SB</span>
-        </>
-      );
       
   return (
     <>

@@ -136,7 +136,7 @@ export const getContent = asyncErrorHandler(
         if(userAccount[0]?.userId.accountType){
             res.status(200).json({
                 content:userAccount
-            })
+            })  
         }else{
             res.status(404).json({
                 message:"Not Found"
@@ -154,6 +154,11 @@ export const getContent = asyncErrorHandler(
     }
 )
 
+export const getUserProfile = asyncErrorHandler(
+    async(req, res, next) => {
+    
+    }
+)
 export const createShareableLink =asyncErrorHandler( 
     async(req:Request<{contentId:string},{},{}>, res, next) => {
     checkValidSchema<string>(req.params.contentId,  z.string())
@@ -203,13 +208,14 @@ export const getAllSharedPost = asyncErrorHandler(
         })
     }
 )
+
 export const getShareLinkContent = asyncErrorHandler(
-    async(req:Request<{link: string}>, res, next) => {
-        checkValidSchema(req.params.link, z.string())
+    async(req:Request<{hash: string}>, res, next) => {
+        checkValidSchema(req.params.hash, z.string())
 
-        const {link} = req.params;
+        const {hash} = req.params;
 
-        const isValidLink = await LinkModel.findById(link).populate<{contentId:ReqContent}>({
+        const isValidLink = await LinkModel.findOne({hash}).populate<{contentId:ReqContent}>({
             path: 'contentId',
             populate: {
               path: 'userId',
