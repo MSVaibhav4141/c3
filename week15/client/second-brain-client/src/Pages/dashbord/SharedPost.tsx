@@ -11,6 +11,7 @@ export const SharedPost = () => {
         queryFn:getSharedPost
     })
 
+    console.log(data)
     return<>
          <Masonry
                 breakpointCols={breakpoints}
@@ -18,7 +19,7 @@ export const SharedPost = () => {
                 columnClassName="masonry-column"
               >
                 {isLoading && <>Loading</>}
-                {isSuccess && data.posts?.map((i:any, index:number) => (
+                {isSuccess &&  data && data?.posts?.map((i:any, index:number) => (
                   <div key={index} className="break-inside-avoid mb-4">
                   <Cards data={i} />
                 </div>

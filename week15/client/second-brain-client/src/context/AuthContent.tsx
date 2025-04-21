@@ -7,6 +7,8 @@ type AuthStoreType = {
     isAuth:boolean|undefined,
     username:string|undefined,
     loading:boolean,
+    email?:string,
+    accountType?:string
     login: (token:string) => void,
     logout: () => void,
     id:string | undefined
@@ -14,8 +16,10 @@ type AuthStoreType = {
 
 type Response = {
     isAuth:true | false,
-    username:string|undefined,
-    id:string|undefined
+    username?:string,
+    accountType?:string
+    id?:string,
+    email?:string
 }
 
 const checkIfAuth = async():Promise<Response> => { 
@@ -35,7 +39,9 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
 
     const [isAuth, setAuth] = useState<boolean | undefined>(undefined)
     const [username, setName] = useState<string | undefined>(undefined)
+    const [email, setEmail] = useState<string | undefined>(undefined)
     const [id, setId] = useState<string | undefined>(undefined)
+    const [accountType, setAccountType] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(true)
 
     const queryClient = useQueryClient()
@@ -64,13 +70,15 @@ export const AuthProvider = ({children}:{children: ReactElement}) => {
         setAuth(data?.isAuth)
         setName(data?.username)
         setId(data?.id)
+        setEmail(data?.email)
+        setAccountType(data?.accountType)
     }, [data])
 
     useEffect(() => {
         setLoading(false)
     }, [isLoading])
     return<>
-    <AuthContext.Provider value={{loading,isAuth,login,logout,username,id }}>
+    <AuthContext.Provider value={{loading,isAuth,login,logout,username,id,email,accountType }}>
     {children}
     </AuthContext.Provider>
     </>

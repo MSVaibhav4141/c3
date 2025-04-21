@@ -108,7 +108,7 @@ export const SignIn = () => {
                 required
                 className="p-3 h-16  mt-4 mb-1 focus:outline-none focus:border-gray-600 border-1 rounded-md border-gray-400 "
               />
-              <p className="text-end text-sm mb-8 text-indigo-800 cursor-pointer hover:text-indigo-600">
+              <p onClick={() => navigate('/reset/password')} className="text-end text-sm mb-8 text-indigo-800 cursor-pointer hover:text-indigo-600">
                 Problem signing in?
               </p>
 

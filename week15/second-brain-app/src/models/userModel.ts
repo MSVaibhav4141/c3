@@ -1,7 +1,15 @@
 import mongoose, { model } from "mongoose";
-import { boolean } from "zod";
+import bcrypt from "bcrypt";
 
-const userScehma = new mongoose.Schema({
+export interface IUser extends Document {
+    name: string;
+    username: string;
+    password: string;
+    accountType: boolean;
+    save(): Promise<IUser>;
+  }
+
+const userScehma = new mongoose.Schema<IUser>({
     name:{
         type:String,
         unique:true,
@@ -24,4 +32,14 @@ const userScehma = new mongoose.Schema({
     }
 })
 
-export const User = model('User', userScehma);
+userScehma.pre("save", async function(next){
+    if(!this.isModified("password")){
+        return next()
+    }
+
+    const hash = await bcrypt.hash(this.password!, 10)
+    this.password = hash
+    next();
+})
+
+export const User = model<IUser>('User', userScehma);

@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 export const useCloseOnOutClick = (element:HTMLElement | null) => {
 
     const [clickStatus, setClick] = useState(true)
-    
+
     useEffect(() => {
         const handleClick = (e:Event) => {
-
+        
             if(element && !element.contains(e.target as Node)){
+                console.log('element')
                 setClick( true);
             }else{
                 element && setClick(false)

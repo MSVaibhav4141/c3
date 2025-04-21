@@ -14,17 +14,16 @@ export const breakpoints = {
 export const DashboardHome = () => {
 
  
-  const {id} = useAuth()
+  const {username} = useAuth()
 
   const { data, isSuccess,isLoading } = useQuery({
-    queryKey: ["user-content", id],
-    queryFn: () => getContent(id),
+    queryKey: ["user-content", username],
+    queryFn: () => getContent(username),
     staleTime:2 * 60 * 1000,
-    enabled: !!id, 
+    enabled: !!username, 
   });
 
  
-console.log(data,id)
   return (
     <>
       <Masonry

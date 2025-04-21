@@ -16,6 +16,8 @@ export const checkAuth: RequestHandler = async(req , res, next) => {
          res.status(200).json({
             isAuth:true,
             username:user?.name,
+            email:user?.username,
+            accountType:true? "Public":"Private",
             id:user?._id
         })
     }else{

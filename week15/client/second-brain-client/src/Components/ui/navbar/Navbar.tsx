@@ -21,6 +21,7 @@ import { useDebouncing } from "../../../hooks/useDebouncing";
 import { useMutation } from "@tanstack/react-query";
 import { getSearchResult } from "../../../api/getSearchResult";
 import { throwAxiosError } from "../../../handleAxioserr";
+import { UserProfile } from "../User_ProfileModal";
 
 interface NavProps {
   logo: ReactElement;
@@ -32,18 +33,19 @@ export const Navbar = (props: NavProps): ReactElement => {
   // For giving input to search box
   const [searchInput, setInput] = useState<string>("");
   const [open, setOpen] = useState(false);
-  const { loading, isAuth, logout } = useAuth();
+  const { loading, isAuth, logout, username } = useAuth();
   const [isHam, setHam] = useState<string>("close");
   const [serachOn, setSearch] = useState<string>("searchOff");
-
+  const [isProfileOpen, setProfileState] = useState(false)
   const [openBadge, setBadge] = useState(false);
-
+  const [isGemini, setGemini] = useState(true)
   const hamStyle: Record<string, string> = {
     open: "top-[65px] opacity-100",
     close: " opacity-0 -top-[40px]",
     searchOn: "top-[0px] left-0 opacity-100",
     searchOff: "top-[-1000px] opacity-0",
   };
+  const modalRef = useRef<HTMLDivElement>(null)
 
   const handleTheme = () => {
     
@@ -57,9 +59,15 @@ export const Navbar = (props: NavProps): ReactElement => {
       document.querySelector('body')?.classList.add('dark')
     }
   }
+
+
+  const handleGeminiToggle = () => {
+    setGemini(prev => !prev)
+  }
+
   const BadgeItems = [
-    <span> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch w={38} h={20}/></span>,
-    <span>Profile</span>,
+    <span title={`Turn ${isGemini ? 'off' : 'on'} auto tag & title`}> <GemeniIcon className="w-18 mr-2"/><ToggleSwitch initalState={isGemini} onChange={handleGeminiToggle} w={38} h={20}/></span>,
+    <span onClick={() => setProfileState(true)}>Profile</span>,
     <span onClick={handleTheme}>Theme</span>,
     <span onClick={() => setOpen(true)}>Add Conent</span>,
     <Link to={`/user/ll/Bookmarks`}><span>Bookmarks</span></Link>,
@@ -83,7 +91,6 @@ export const Navbar = (props: NavProps): ReactElement => {
   const isClick = useCloseOnOutClick(badgeRef.current);
 
   useEffect(() => {
-    console.log(isClick)
     setBadge(!isClick);
   }, [isClick]);
 
@@ -133,7 +140,11 @@ export const Navbar = (props: NavProps): ReactElement => {
                   />
                 </div>
                 <Modal isOpen={open} setOpen={setOpen} opacity={50} >
-                  <ContentModal setOpen={setOpen}/>
+                  <ContentModal isGemini={isGemini} setOpen={setOpen}/>
+                </Modal>
+
+                <Modal  isOpen={isProfileOpen} setOpen={setProfileState} opacity={50}>
+                  <UserProfile setOpen={setProfileState}/>
                 </Modal>
                 <Input
                   className="hidden sm:block"
@@ -176,7 +187,7 @@ export const Navbar = (props: NavProps): ReactElement => {
                 >
                   <Bars
                     stroke={1.5}
-                    className="w-8 h-8 hover:text-purple-500 transition duration-150 cursor-pointer md:hidden"
+                    className="w-8 h-8 text-grey-400 hover:text-purple-400 transition duration-150 cursor-pointer md:hidden"
                   />
                 </span>
               </>
@@ -187,6 +198,7 @@ export const Navbar = (props: NavProps): ReactElement => {
       <div className="pb-[70px]"></div>
 
       <SearchModal
+      username={username}
         isAuth={isAuth}
         searchInput={searchInput}
         setSearch={setSearch}

@@ -1,10 +1,6 @@
-import { cloneElement, Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
+import { cloneElement, Dispatch, ReactElement, SetStateAction } from "react";
 import { CloseIcon, SearchIcon } from "../Icons";
 import { Input } from "../Input";
-import { useDebouncing } from "../../../hooks/useDebouncing";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getSearchResult } from "../../../api/getSearchResult";
-import { throwAxiosError } from "../../../handleAxioserr";
 import { Link } from "react-router-dom";
 
 type NavModalProp<T extends string> = {
@@ -18,7 +14,8 @@ type NavModalProp<T extends string> = {
   isHam: T;
   isResultLoad:boolean,
   finalResult:{id:string, content:string}[],
-  isSuccess?:boolean
+  isSuccess?:boolean,
+  username?:string
 };
 export const SearchModal = ({
   searchInput,
@@ -31,7 +28,8 @@ export const SearchModal = ({
   navItems,
   isHam,
   isResultLoad,
-  finalResult
+finalResult,
+  username
 }: NavModalProp<string>) => {
 
   
@@ -40,7 +38,7 @@ export const SearchModal = ({
     <>
       {isAuth ? (
         <div
-          className={`h-screen w-full fixed z-[101] bg-modal transition-all ease-in-out duration-300 ${hamStyle[serachOn]} p-2 sm:hidden block`}
+          className={`h-screen w-full fixed z-[101] bg-mode transition-all ease-in-out duration-300 ${hamStyle[serachOn]} p-2 sm:hidden block`}
         >
           <div className={`w-full flex justify-end`}>
             <button onClick={() => setSearch("searchOff")}>
@@ -62,14 +60,14 @@ export const SearchModal = ({
            
       {finalResult && finalResult.length === 0 ? isSuccess && <div className="w-full shadow-md bg-gray-200 px-2 m-2 mt-2 rounded-md text-center py-3 mx-auto">No result found</div> : 
       !isResultLoad && finalResult.map((i, index) => (
-        <Link className="flex justify-center" to={`/search/${i.id}`}><div className="w-full shadow-md bg-gray-200 hover:bg-purple-200 px-2 m-2 mt-2 rounded-md text-center py-3" key={index}>{i.content}</div></Link>
+        <Link onClick={() => setSearch("searchOff")} className="flex justify-center" to={`/user/${username}/${i.id}`}><div className="w-full shadow-md bg-gray-200 hover:bg-purple-200 px-2 m-2 mt-2 rounded-md text-center py-3" key={index}>{i.content}</div></Link>
       ))
       }
     </div>
         </div>
       ) : (
         <div
-          className={`fixed z-[101] bg-white border-gray-300 shadow-md border-b-1 w-full rounded-b-xl ${hamStyle[isHam]} transition-all ease-in-out duration-200`}
+          className={`fixed z-[101] bg-mode border-gray-300 shadow-md border-b-1 border-border-color w-full rounded-b-xl ${hamStyle[isHam]} transition-all ease-in-out duration-200`}
         >
           {cloneElement(navItems, {
             className: "flex pb-6",

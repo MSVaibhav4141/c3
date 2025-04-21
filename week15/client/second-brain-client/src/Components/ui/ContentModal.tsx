@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, RefAttributes, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,10 +13,11 @@ import { useAuth } from "../../context/AuthContent";
 
 type thisModalProp = {
   setOpen:Dispatch<SetStateAction<boolean>>
+  isGemini:boolean
 }
 export const ContentModal = (props:thisModalProp) => {
 
-  const {id} = useAuth()
+  const {username} = useAuth()
   //Inital value for payloads
   const initialLink = {
     link: "",
@@ -103,7 +104,7 @@ export const ContentModal = (props:thisModalProp) => {
     mutationFn: createContent,
     onSuccess:(data) => {
       toast.success(data.message)
-      queryClient.invalidateQueries({queryKey:["user-content",id]})
+      queryClient.invalidateQueries({queryKey:["user-content", username]})
       props.setOpen(false)
     },
     onError:throwAxiosError
@@ -175,7 +176,7 @@ const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
           <input
             disabled={getType.isSuccess}
             onChange={handleModaInputChage}
-            onBlur={(e) => handleBlur(e)}
+            onBlur={(e) => {props.isGemini && handleBlur(e)}}
             type="text"
             placeholder="Link"
             name="link"
@@ -187,7 +188,7 @@ const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
         <input
           name="title"
           onChange={handleModaInputChage}
-          onBlur={(e) => {contentType === 'notes' && handleBlur(e)}}
+          onBlur={(e) => {contentType === 'notes' && props.isGemini && handleBlur(e)}}
           type="text"
           value={contentType === 'link' ? payloadLink.title : payloadNotes.title}
           placeholder="title"

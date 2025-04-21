@@ -7,11 +7,11 @@ import { breakpoints } from "./Home";
 
 export const Bookmarks = () => {
 
-    const {id} = useAuth();
+    const {username} = useAuth();
 
     const {data, isSuccess} =  useQuery({
-        queryKey:["user-content", id],
-        queryFn:() => getContent(id)
+        queryKey:["user-content", username],
+        queryFn:() => getContent(username)
     })
 
 

@@ -33,7 +33,7 @@ export const Mid = () => {
             />
             <img
               src="/assets/ayy.png"
-              className="absolute min-w-2xl md:w-xl z-[10000] bottom-[-160px] md:-bottom-[50px] left-[50%] -translate-x-1/2 md:left-[80%] "
+              className="absolute min-w-2xl md:w-xl z-[10] bottom-[-160px] md:-bottom-[50px] left-[50%] -translate-x-1/2 md:left-[80%] "
               alt=""
             />
           </div>

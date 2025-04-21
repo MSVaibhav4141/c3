@@ -3,6 +3,7 @@ import { Hero } from "../Home/Hero";
 import { Mid } from "../Home/MidPage";
 import { useAuth } from "../../context/AuthContent";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "../Home/Footer";
 
 
 export const LandingPage = () => {
@@ -17,6 +18,7 @@ export const LandingPage = () => {
     <>
       <Hero />
       <Mid />
+      <Footer />
     </>
   );
 };

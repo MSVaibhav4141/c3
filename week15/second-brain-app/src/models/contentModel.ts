@@ -30,6 +30,9 @@ const contentSchema = new mongoose.Schema({
   },
   isBookMark:{
     type:Boolean
+  },
+  isShared:{
+    type:Boolean
   }
 });
 

@@ -7,13 +7,13 @@ import { breakpoints } from "./Home";
 
 export const YoutubePage = () => {
 
-    const {id} = useAuth()
+    const {username} = useAuth()
 
     const { data,isSuccess } = useQuery({
-        queryKey: ["user-content", id],
-        queryFn: () => getContent(id),
+        queryKey: ["user-content", username],
+        queryFn: () => getContent(username),
         staleTime:2 * 60 * 1000,
-        enabled: !!id, 
+        enabled: !!username, 
       });
     
 
@@ -23,7 +23,7 @@ export const YoutubePage = () => {
            className="flex w-full gap-4 p-6"
            columnClassName="masonry-column"
          >
-           {data && (data.content?.filter((i:any) => i.type === 'YouTube')).map((i:any,index:number) => (
+           {isSuccess && (data.content?.filter((i:any) => i.type === 'YouTube')).map((i:any,index:number) => (
             <div key={index} className="break-inside-avoid mb-4">
              <Cards data={i} />
            </div>

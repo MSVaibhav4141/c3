@@ -19,6 +19,7 @@
   --color-modal:#FFFFFF;
   --color-navbar:#FFFFFF;
   --color-mode:#FFFFFF;
+  --color-footer:#464049;
 }
 .dark{
   --color-purple-300:#A553CB;
@@ -37,6 +38,7 @@
   --color-modal:#151515;
   --color-navbar:#FFFFFF;
   --color-mode:#000000;
+  --color-footer:#464049;
 }
 
 body{

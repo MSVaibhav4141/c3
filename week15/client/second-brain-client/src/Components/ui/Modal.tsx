@@ -5,9 +5,10 @@ interface ModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   children: React.ReactNode;
   opacity: number;
+  reference?:React.RefObject<HTMLDivElement | null>
 }
 
-export const Modal = ({ isOpen, setOpen, children, opacity }: ModalProps) => {
+export const Modal = ({ isOpen, setOpen, children, opacity, reference }: ModalProps) => {
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add("overflow-hidden");
@@ -31,14 +32,14 @@ export const Modal = ({ isOpen, setOpen, children, opacity }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0  z-[150] w-[100vw] h-[100vh] ">
+    <div ref={reference} className="fixed top-0 left-0  z-[150] w-[100%] h-[100%] ">
       <div
-        className="absolute bg-black  w-[100vw] h-[100vh] top-0 left-0"
+        className="absolute bg-black  w-[100%] h-[100%] top-0 left-0"
         style={{ opacity: opacity / 100 , height:'100vh'}}
         onClick={() => setOpen(false)}
       ></div>
 
-      <div className="relative z-[150] w-[100vw] h-[100vh]">{children}</div>
+      <div className="relative z-[150] w-[100%] h-[100vh] ">{children}</div>
     </div>
   );
 };

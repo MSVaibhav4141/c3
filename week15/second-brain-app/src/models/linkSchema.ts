@@ -1,5 +1,4 @@
 import mongoose, { model, ObjectId } from "mongoose";
-import { string } from "zod";
 
 
 const LinkSchema = new mongoose.Schema({
@@ -8,11 +7,16 @@ const LinkSchema = new mongoose.Schema({
     contentId : {
         type:mongoose.Types.ObjectId,
         ref:"Content"
+    },
+    userId : {
+        type:mongoose.Types.ObjectId,
+        ref:"User"
     }
 })
 
 type LinkSchemaModel = {
     hash:string,
-    contentId: ObjectId
+    contentId: ObjectId,
+    userId:ObjectId
 }
 export const LinkModel = model<LinkSchemaModel>('Link', LinkSchema);
