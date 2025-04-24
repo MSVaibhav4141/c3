@@ -1,7 +1,6 @@
 import { Button } from "../../Components/ui/Button";
 import { FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { resetPasswordMail } from "../../api/requestResetMail";
 import { toast } from "react-toastify";
 import { changePassword } from "../../api/changePassword";
 import { useNavigate, useSearchParams } from "react-router-dom";

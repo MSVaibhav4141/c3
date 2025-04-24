@@ -21,8 +21,8 @@ export const Cards = (props: CardProps) => {
   const [loading, setLoading] = useState(true);
 
   console.log(props.data)
-  const {id, username} = useAuth()
-  const {link, tags,body, title, type,userId, _id,isBookMark, isShared} = props.data
+  const {id} = useAuth()
+  const {link,body, title,userId, _id,isBookMark, isShared} = props.data
 
   const queryClient = useQueryClient()
 

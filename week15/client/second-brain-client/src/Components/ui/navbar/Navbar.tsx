@@ -45,7 +45,6 @@ export const Navbar = (props: NavProps): ReactElement => {
     searchOn: "top-[0px] left-0 opacity-100",
     searchOff: "top-[-1000px] opacity-0",
   };
-  const modalRef = useRef<HTMLDivElement>(null)
 
   const handleTheme = () => {
     
