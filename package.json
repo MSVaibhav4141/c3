@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "create": "^0.5.5",
+    "jsonwebtoken": "^9.0.2",
     "vite": "^6.3.2",
     "zod-validation-error": "^3.4.0"
   }
