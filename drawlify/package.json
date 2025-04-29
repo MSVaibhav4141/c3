@@ -1,5 +1,5 @@
 {
-  "name": "darwlify",
+  "name": "drawlify",
   "private": true,
   "scripts": {
     "build": "turbo run build",
