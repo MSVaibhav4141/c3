@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Todos {
-  id          String   @id
+  id          Int      @id @default(autoincrement())
   title       String
   iscompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
