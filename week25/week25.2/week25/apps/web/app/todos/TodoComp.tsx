@@ -45,7 +45,7 @@ export const TodoComp = ({data}: {data : any}) => {
     return(
         <>
         <div>
-        {todo.map((i: ITodo,index: number) => (
+        {todo && todo.map((i: ITodo,index: number) => (
                 <div key={index}>
                 <div>{i.title}</div>
                 {/* <div >{i.completed.toString()}</div> */}

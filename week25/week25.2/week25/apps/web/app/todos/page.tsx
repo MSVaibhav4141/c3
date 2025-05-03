@@ -9,8 +9,16 @@ export interface ITodo{
 }
 
 export default async function TodosPage(){
-    const data1  = await fetch(`${SERVER_URL}/get/todos`)
-    const data = await data1?.json()
+    let data1, data;
+    try{
+         data1  = await fetch(`${SERVER_URL}/get/todsos`) || []
+         data = await data1?.json();
+         
+        }
+        catch(e){
+            
+            data = []
+    }
     console.log(data)
     return(
         <div>
