@@ -1,4 +1,4 @@
-name: CI/CD main for backend
+name: CI/CD main for web
 on:
   push:
     branches: [main]
