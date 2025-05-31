@@ -1,0 +1,28 @@
+FROM oven/bun:1
+
+RUN apt-get update -y && apt-get install -y openssl
+
+WORKDIR /usr/src/app
+
+ARG DB_URL
+
+COPY ./packages ./packages
+COPY ./package.json ./package.json
+COPY ./bun.lock ./bun.lock
+
+COPY ./turbo.json ./turbo.json
+
+COPY ./apps/web/package.json ./apps/web/package.json
+
+RUN bun install 
+
+COPY ./apps/web ./apps/web
+
+RUN bun run db:generate
+RUN echo "DB_URL is: ${DB_URL}"
+
+RUN DATABASE_URL=${DB_URL} bunx turbo build --filter=web...
+
+EXPOSE 3000
+
+CMD [ "bun", "run", "start:web"]

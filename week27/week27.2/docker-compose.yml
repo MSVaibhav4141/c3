@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data_app:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  httpbackend: 
+    build: 
+      context: .
+      dockerfile: ./Dockerfile/Dockerfile.backend
+    container_name: appbackend
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
+    depends_on:
+      - postgres
+
+  websocket:
+    build:
+      context: .
+      dockerfile: ./Dockerfile/Dockerfile.ws
+    container_name: appws
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
+    depends_on:
+      - postgres
+  
+  frontend: 
+    build: 
+      context: .
+      dockerfile: ./Dockerfile/Dockerfile.frontend
+      args:
+        - DB_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=pub
+    container_name: appclient
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres_data_app:
+    
+    
+      
+        
