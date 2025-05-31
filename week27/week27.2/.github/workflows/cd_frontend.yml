@@ -1,0 +1,28 @@
+name: CI/CD main for backend
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Login to docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and Push 
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile/Dockerfile.frontend
+          build-args:
+            - DB_URL=${{secrets.DB_URL}}
+          push: true
+          tags: msvaibhav4141/vmsrepo-frontend:${{ github.sha }}
+
+    

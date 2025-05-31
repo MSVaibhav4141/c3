@@ -18,9 +18,14 @@ RUN bun install
 
 COPY ./apps/web ./apps/web
 
-RUN bun run db:generate
+RUN  bunx prisma generate --schema packages/db/prisma/schema.prisma
 
-RUN DATABASE_URL=${DB_URL} bunx turbo build --filter=web...
+RUN cd apps/web 
+
+ENV DATABASE_URL=${DB_URL}
+
+RUN cd ../..
+RUN bun run build
 
 EXPOSE 3000
 
