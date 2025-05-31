@@ -20,4 +20,4 @@ RUN bun run db:generate
 
 EXPOSE 8081 
 
-CMD [ "bun", "run", "start:backend"]
+CMD [ "bun", "run", "start:ws"]

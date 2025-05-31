@@ -19,7 +19,6 @@ RUN bun install
 COPY ./apps/web ./apps/web
 
 RUN bun run db:generate
-RUN echo "DB_URL is: ${DB_URL}"
 
 RUN DATABASE_URL=${DB_URL} bunx turbo build --filter=web...
 
