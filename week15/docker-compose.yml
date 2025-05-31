@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+    mongodb:
+        image: mongo
+        container_name: appDB
+        ports:
+            - "27017:27017"
+        volumes:
+            - app_brain_data:/data/db
+    backendapp:
+        build: 
+            context: ./second-brain-app
+            dockerfile: Dockerfile
+        environment:
+            - GEMENI_KEY=${GEMENI_KEY}
+            - PINECONE_KEY=${PINECONE_KEY}
+            - HFKEY=${HUGGING_FACE_TOKEN}
+            - JWT_SECRET=${JWT_SECRET}
+            - SMTP_PASS=${SMTP_PASS}
+            - SMTP_MAIL=${MAIL}
+            - FRONT_URL=http://localhost:5173
+        container_name: appserver
+        ports:
+            - '3000:3000'
+        depends_on:
+            - mongodb
+
+    appclient:
+        build: 
+            context: ./client/second-brain-client
+            dockerfile: Dockerfile
+        environment:
+            - VITE_SERVER_HOST=http://localhost:3000/v1
+            - VITE_FRONTEND_URL=http://localhost:5173
+        container_name: appclient
+        ports:
+            - "5173:5173"
+        depends_on:
+            - backendapp
+
+volumes:
+    app_brain_data:

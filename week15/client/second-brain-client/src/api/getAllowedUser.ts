@@ -1,6 +1,5 @@
 import axios from "axios"
 import { URL } from "./signIn"
-import { string } from "zod"
 
 
 export const getAllowedUsers = async<T>(): Promise<T> =>  {

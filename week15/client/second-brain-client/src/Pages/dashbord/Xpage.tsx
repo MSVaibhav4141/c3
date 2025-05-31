@@ -8,7 +8,7 @@ import { breakpoints } from "./Home";
 export const Xpage = () => {
   const { username } = useAuth();
 
-  const { data, isSuccess } = useQuery({
+  const { data } = useQuery({
     queryKey: ["user-content", username],
     queryFn: () => getContent(username),
     staleTime: 2 * 60 * 1000,
