@@ -21,6 +21,6 @@ jobs:
           context: .
           file: ./Dockerfile/Dockerfile.backend
           push: true
-          tags: vms4141/monorepo:${{ github.sha }}
+          tags: vms4141/vmsrepo:${{ github.sha }}
 
     
