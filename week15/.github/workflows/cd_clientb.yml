@@ -1,8 +1,8 @@
-name: CI/CD main for frrrrrrrrrrrrrrrr
+name: CI/CD main for backend111111
 on:
   push:
     branches: [main]
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,8 +14,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      
+      - name: Build and Push 
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -25,9 +25,4 @@ jobs:
             - VITE_FRONTEND_URL=http://localhost:5173
           push: true
           tags: msvaibhav4141/brainly-client:${{ github.sha }}
-      - run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
-          chmod 700 /home/runner/ssh_key
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key root@15.206.210.142 -t "docker run -d --name brainlyclient -p 3000:80 msvaibhav4141/brainly-client:${{ github.sha }} && docker stop brainlyclient"
-
     
