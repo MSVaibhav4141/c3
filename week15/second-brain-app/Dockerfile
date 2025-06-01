@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
@@ -9,4 +9,11 @@ COPY . .
 
 RUN npm run build
 
-CMD ["npm", "start"]
+FROM node:24-alpine AS prod
+
+WORKDIR /app
+
+COPY --from=build ./app/dist .
+COPY --from=build /app/node_modules ./node_modules
+
+CMD ["node", "./index.js"]
