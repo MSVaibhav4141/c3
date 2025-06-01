@@ -35,7 +35,7 @@ export const Footer = () => {
 </a>
 
         </div>
-            <p className="mt-6 ">BrainlySB made with 🩷 by VaibhavMS</p>
+            <p className="mt-6 ">BrainlySB made with 🩷 by VaibhavMS.</p>
 
     </div>
     </div>
