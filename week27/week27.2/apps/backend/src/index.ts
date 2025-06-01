@@ -19,15 +19,15 @@ app.get("/todos", async(req, res) => {
 
 })
 
-app.post('/add/todo' ,async(req:Request<{},{},{title:string}>, res) => {
+app.post('/add/todo' ,async(req:Request<{},{},{title:string, userId:string}>, res) => {
 
-    const {title} = req.body;
+    const {title, userId} = req.body;
 
 
     await prismaClient.todo.create({
         data:{
             title,
-            userId:"abd5e8d3-5302-4051-9714-ceda43abb672"
+            userId
         }
     })
 
@@ -41,7 +41,7 @@ app.post('/signup', async(req:Request<{},{},{username:string, password:string}>,
 
     const saltedPassword = await bcrypt.hash(password, 10)
 
-    await prismaClient.user.create({
+    const user  = await prismaClient.user.create({
         data:{
             username,
             password:saltedPassword
@@ -50,7 +50,8 @@ app.post('/signup', async(req:Request<{},{},{username:string, password:string}>,
 
     res.json({
         username,
-        password
+        password,
+        user: user.id
     })
 })
 

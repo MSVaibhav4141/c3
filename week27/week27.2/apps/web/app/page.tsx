@@ -1,10 +1,13 @@
 import { prismaClient  } from "db/client"
-import { todo } from "node:test"
 export default async function Home(){
 
   
+  if (process.env.SKIP_DB === 'true') {
+  return<></>; 
+}
   const todos = await prismaClient.todo.findMany()
-  console.log(todo)
+  
+
   return (
     <>
     {JSON.stringify(todos)}
@@ -13,4 +16,4 @@ export default async function Home(){
   )
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60;

@@ -1,33 +1,37 @@
-FROM oven/bun:1
+FROM oven/bun:1 AS build
+
+
+ARG DATABASE_URL
+ENV SKIP_DB=true
+
+WORKDIR /usr/src/app
+
+RUN apt-get update -y && apt-get install -y openssl
+
+COPY ./packages /usr/src/app/packages
+COPY ./apps/web /usr/src/app/apps/web
+COPY ./package.json /usr/src/app/package.json  
+COPY ./turbo.json /usr/src/app/turbo.json  
+COPY ./bun.lock /usr/src/app/bun.lock
+
+RUN bun install 
+
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL bunx prisma generate
+
+WORKDIR /usr/src/app/apps/web
+
+RUN bun run build
+
+FROM oven/bun:1 AS run
 
 RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
-ARG DB_URL
-
-COPY ./packages ./packages
-COPY ./package.json ./package.json
-COPY ./bun.lock ./bun.lock
-
-COPY ./turbo.json ./turbo.json
-
-COPY ./apps/web/package.json ./apps/web/package.json
-
-RUN bun install 
-
-COPY ./apps/web ./apps/web
-
-RUN  bunx prisma generate --schema packages/db/prisma/schema.prisma
-
-RUN cd apps/web 
-
-ENV DATABASE_URL=${DB_URL}
-
-RUN cd ../..
-RUN bun run build
+COPY --from=build /usr/src/app/apps/web/.next/standalone ./
+COPY --from=build /usr/src/app/apps/web/.next/static ./.next/static
+COPY --from=build /usr/src/app/apps/web/public ./public
 
 EXPOSE 3000
 
-
-CMD [ "bun", "run", "start:web"]
+CMD [ "bun", "apps/web/server.js"]

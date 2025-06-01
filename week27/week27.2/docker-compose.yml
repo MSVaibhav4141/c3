@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+      POSTGRES_DB: mydb
     volumes:
       - postgres_data_app:/var/lib/postgresql/data
     healthcheck:
@@ -25,7 +25,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres?schema=public
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
     depends_on:
       - postgres
 
@@ -37,7 +37,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres?schema=public
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
     depends_on:
       - postgres
   
@@ -46,9 +46,10 @@ services:
       context: .
       dockerfile: ./Dockerfile/Dockerfile.frontend
       args:
-        - DB_URL=postgresql://postgres:password@postgres:5432/postgres?schema=public
+        - DATABASE_URL=postgresql://postgres:mock@mock:5432/mydb?schema=public
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres?schema=pub
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb?schema=public
+      - SKIP_DB=false
     container_name: appclient
     ports:
       - "3000:3000"
