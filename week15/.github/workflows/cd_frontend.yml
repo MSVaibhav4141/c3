@@ -17,7 +17,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./client/second-brain-client
+          context: ./client/second-brain-client/
           file: ./Dockerfile.prod
           push: true
           build-args: |
