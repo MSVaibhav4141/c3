@@ -28,6 +28,6 @@ jobs:
           mkdir -p /home/runner/.ssh
           ls /home/runner/.ssh
           chmod 700 /home/runner/ssh_key
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@15.206.210.142 -t "docker stop brainlyserver && docker rm brainlyserver &&  docker run -d --name brainlyserver --network brainet -e ${{ secrets.GEMENI_KEY }} -e ${{ secrets.PINECONE_KEY }} -e ${{ secrets.HFKEY }} -e ${{ secrets.JWT_SECRET }} -e ${{ secrets.SMTP_PASS }} -e ${{ secrets.SMTP_MAIL }} -e ${{ secrets.FRONT_URL }} -e ${{ secrets.DB_URL }} -p 3000:3000 msvaibhav4141/brainly-server:${{ github.sha }}"
+          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@15.206.210.142 -t "docker stop brainlyserver && docker rm brainlyserver &&  docker run -d --name brainlyserver --network brainet -e ${{ secrets.DB_URL }}  -p 3000:3000 msvaibhav4141/brainly-server:${{ github.sha }}"
 
 
