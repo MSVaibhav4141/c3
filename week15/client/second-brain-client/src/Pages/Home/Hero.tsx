@@ -187,7 +187,7 @@ export const Hero = () => {
         <>
         <div className="p-2 md:p-6">
         <div  className={`w-full max-h-[500px] md:max-h-[800px] md:min-h-[650px] bg-purple-100 h-[calc(100vh-70px)] rounded-2xl pt-10 overflow-hidden relative text-grey-400  ${defaultStyling.style}`}>
-            <h1  ref={heroRef} className="text-purple-300 text-4xl md:text-[5vmax] ">Introducing Brain</h1>
+            <h1  ref={heroRef} className="text-purple-300 text-4xl md:text-[5vmax] ">Introducing Brainly</h1>
             <h2  ref={heroH2Ref} >Never miss content you</h2>
             <h2  ref={heroH2Ref2} >meant to revisit!</h2>
             <img ref={brainRef} onClick={() => isMobile && setClick(prev => !prev)} onMouseEnter={() => !isMobile && handleMouseEnter()} onMouseLeave={() => !isMobile && handleMouseLeave()}className={`absolute left-[50%] -bottom-30 sm:-bottom-60 md:-bottom-70 -translate-x-1/2 w-lg h-lg  md:w-xl lg:w-2xl md:h-xl lg:h-2xl ${exceptionWidth ? '-bottom-60' : ''}` } src="/assets/brain.png" alt="" />
