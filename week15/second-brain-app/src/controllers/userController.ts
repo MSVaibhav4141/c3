@@ -242,7 +242,8 @@ export const createContent = asyncErrorHandler(
         }
         const content =  await ContentModel.create({...req.body,userId:id})
 
-        await storeDocument(content._id.toString(), content.title as string)
+        if(req.userId)
+        await storeDocument(content._id.toString(), content.title as string, req.userId)
 
         res.status(200).json({
             message:"Your content has been saved"
@@ -559,13 +560,20 @@ export const searchDoc = asyncErrorHandler(
         if(text.length === 0) return ;
 
         const result = await searchDocuments(text)
+        
+        let matchingContent;
 
-        const matchingContent =await sendDocToLLm(text, result)
+        if(req.userId)
+         matchingContent = await sendDocToLLm(text, result, req.userId)
+        else{
+            throw new ErrorHandeler("Not authorized", 401)
+        }
         const cleaned = matchingContent
         .replace(/^```json\s*/i, '')  
         .replace(/```$/, '');            
 
         console.log(matchingContent)
+
         res.status(200).json({
             message:JSON.parse(cleaned)
         })

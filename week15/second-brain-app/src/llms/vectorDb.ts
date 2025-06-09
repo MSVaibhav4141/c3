@@ -7,14 +7,14 @@ import axios, { AxiosError } from 'axios';
 import { ErrorHandeler } from '../utils/errorHandeler';
 
 
-export async function storeDocument(docId:string, text:string) {
+export async function storeDocument(docId:string, text:string, userId: string) {
     try{
         const pc = new Pinecone({ apiKey:process.env.PINECONE_KEY as string});
         const index = pc.index('secondbrain');
             const embedding = await getEmbedding(text);
 
             console.log(embedding)
-        await index.upsert([{ id: docId, values: embedding ,metadata:{title: text}}]);
+        await index.upsert([{ id: docId,values: embedding ,metadata:{title: text, userId}}]);
         console.log(`Stored ${docId} in Pinecone`);
     }catch(e:any){
         console.log(e.message)
@@ -32,19 +32,19 @@ export async function storeDocument(docId:string, text:string) {
       includeMetadata: true,
     });
   
-        const matchingResult = result.matches.map((i) => `Doc${i.id} ${i.metadata?.title || 'Unititled'}`)
+        const matchingResult = result.matches.map((i) => `Doc${i.id} ${i.metadata?.title || 'Unititled'} userId${i.metadata?.userId || 'Unititled'}`)
         return matchingResult as [string];
   }
   
 
 
-  export const sendDocToLLm = async(text:string, results:string[]): Promise<any> => {
+  export const sendDocToLLm = async(text:string, results:string[], userId: string): Promise<any> => {
     
     const docs = results.join('\n')
       const ai = new GoogleGenAI({ apiKey: process.env.GEMENI_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: `Given the following list of documents:\n\n${docs}\n\nBased on the title: "${text}", identify the most relevant document(s).\n\nReturn:\n- Only one document if it's clearly the most relevant.\n- Up to three documents if multiple are similarly relevant.\n\nRespond ONLY with a JSON array of objects, each in the format:\n{\n  "id": "original_id_without_the_'Doc'_prefix",\n  "content": "document content"\n}\n\ninclude markdown, backticks, or explanations in the response. Only return the raw JSON.`
+      contents: `Given the following list of documents:\n\n${docs}\n\nBased on the title: "${text}", identify the most relevant document(s).\n\nReturn:\n- Only one document if it's clearly the most relevant.\nImportant:\n- **Only return documents where the userId matches the userId provided: "${userId}"**.\n- Up to three documents if multiple are similarly relevant.\n\nRespond ONLY with a JSON array of objects, each in the format:\n{\n  "id": "original_id_without_the_'Doc'_prefix",\n"userId":"original_userId_without_the_userId_prefix",\n"content": "document content"\n}\n\ninclude markdown, backticks, or explanations in the response. Only return the raw JSON.`
     });
     return response.text
   }
