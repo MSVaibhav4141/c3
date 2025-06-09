@@ -12,5 +12,5 @@ export const getSearchResult = async ({input}:{input:string}) => {
 
     console.log(data)
     return data;
-    
+     
 }

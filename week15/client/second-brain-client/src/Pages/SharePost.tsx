@@ -69,7 +69,6 @@ export const SharedPostPage = () => {
         <LogoNavbar className="!text-sm"/></div>
         </div>
         )}
-        
         </div>
     </div>
     </>
