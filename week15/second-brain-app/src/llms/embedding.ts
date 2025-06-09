@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getEmbedding =async(text:string) =>{
   try {
     const response = await axios.post(
-      "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
+      "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction",
       {
         inputs: text,
       },

@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContent";
 export const SignUp = () => {
   //Using lbraries func
   const navigate = useNavigate();
-  const { isAuth, username } = useAuth();
+  const { isAuth, username, login } = useAuth();
 
   //Valid payload for zod check
   const signInPayload = z.object({
@@ -42,8 +42,9 @@ export const SignUp = () => {
     mutationFn: signUpFn,
     onSuccess: (data) => {
       localStorage.setItem("authorization", data.token);
+      login(data.token);
       toast.success("You are successfully signed up");
-      navigate("/");
+      navigate(`/user/${data.username}`);
     },
 
     onError: throwAxiosError,
