@@ -17,7 +17,7 @@ export const DashboardHome = () => {
  
   const {username} = useAuth()
 
-  const { data, isSuccess,isLoading } = useQuery({
+  const { data,isLoading } = useQuery({
     queryKey: ["user-content", username],
     queryFn: () => getContent(username),
     staleTime:2 * 60 * 1000,

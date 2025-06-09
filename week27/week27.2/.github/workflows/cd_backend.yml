@@ -23,4 +23,6 @@ jobs:
           push: true
           tags: msvaibhav4141/vmsrepo:${{ github.sha }}
 
+      - name: SSH to vm
+        uses: 
     
