@@ -43,7 +43,7 @@ export const SignUp = () => {
     onSuccess: (data) => {
       localStorage.setItem("authorization", data.token);
       toast.success("You are successfully signed up");
-      navigate("/user/");
+      navigate("/");
     },
 
     onError: throwAxiosError,
