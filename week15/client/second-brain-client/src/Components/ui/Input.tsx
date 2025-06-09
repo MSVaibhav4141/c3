@@ -64,7 +64,7 @@ export const Input = (props: InputProp) => {
         )}
       </div>
       {(inputRef.current?.value.length ?? 0) > 0 && 
-      <div className="absolute -bottom-[0] rounded-sm w-[97%] left-1/2 -translate-x-1/2  bg-white shadow-lg hidden sm:block ">
+      <div className="absolute top-[50px] rounded-sm w-[97%] left-1/2 -translate-x-1/2  bg-white shadow-lg hidden sm:block ">
       {props.finalResult && props.finalResult.length === 0 ? props.isSuccess &&  <div className="w-full shadow-md bg-gray-200 px-2 m-2 mt-2 rounded-md text-center py-3 mx-auto">No result found</div> : 
        !props.isResultLoad && props.finalResult?.map((i, index) => (
         <Link className="flex justify-center" to={`/user/${username}/${i.id}`}><div className="w-full shadow-md bg-gray-200 hover:bg-purple-200 px-2 m-2 mt-2 rounded-md text-center py-3" key={index}>{i.content}</div></Link>
