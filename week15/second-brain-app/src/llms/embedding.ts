@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getEmbedding =async(text:string) =>{
   try {
     const response = await axios.post(
-      "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction",
+      "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
       {
         inputs: text,
       },
@@ -14,8 +14,10 @@ export const getEmbedding =async(text:string) =>{
         }
       }
     );
-   return response.data; // Embedding array
+    console.log('OK')
+    return response.data; 
   } catch (error:any) {
+    console.log('OK')
     console.error("Error fetching embedding:", error.response?.data || error.message);
   }
 }
