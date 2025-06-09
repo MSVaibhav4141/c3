@@ -30,6 +30,6 @@ jobs:
           mkdir -p /home/runner/.ssh
           ls /home/runner/.ssh
           chmod 700 /home/runner/ssh_key
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@15.206.210.142 -t "docker stop brainlyclient && docker rm brainlyclient &&  docker run -d --name brainlyclient --network brainet -p 5173:80 msvaibhav4141/brainly-client:${{ github.sha }}"
+          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ${{ secrets.HOST }} -t "docker stop brainlyclient && docker rm brainlyclient &&  docker run -d --name brainlyclient --network brainet -p 5173:80 msvaibhav4141/brainly-client:${{ github.sha }}"
 
     
