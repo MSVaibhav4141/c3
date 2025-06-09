@@ -9,8 +9,6 @@ export const getSearchResult = async ({input}:{input:string}) => {
             "Content-Type": 'application/json'
         }
     })
-
-    console.log(data)
     return data;
-     
+    
 }
