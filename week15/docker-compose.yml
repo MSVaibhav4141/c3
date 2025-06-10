@@ -13,7 +13,7 @@ services:
             dockerfile: Dockerfile
         environment:
             - GEMENI_KEY=${GEMINI_TOKEN}
-            - PINECONE_KEY=${PINECONE_TOKEN} 
+            - PINECONE_KEY=${PINECONE_TOKEN}     
             - HFKEY=${HUGGING_FACE_TOKEN}     
             - JWT_SECRET=${JWT SECRET}
             - SMTP_PASS=${SMTP_PASS}
