@@ -4,7 +4,7 @@ Bun.serve({
   port:8081,
   fetch(req, server) {
     // upgrade the request to a WebSocket
-    if (server.upgrade(req)) {
+    if (server.upgrade(req)) { //commit 
       return; // do not return a Response
     }
     return new Response("Upgrade failed", { status: 500 });
